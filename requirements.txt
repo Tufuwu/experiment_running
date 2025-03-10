@@ -1,6 +1,2 @@
-####### Requirements #######
-numpy
-scipy
-plotly
-pandas
-networkx
+pbr
+Sphinx>=5.0.0
