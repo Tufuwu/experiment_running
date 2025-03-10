@@ -1,27 +1,79 @@
-__pycache__
-.idea
-.coverage*
-anenv
-venv/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+dist_wo_pbr
+build
+eggs
+.eggs
+parts
+bin
+var
+sdist
+wheelhouse
+develop-eggs
+.installed.cfg
+lib
+lib64
+venv*/
+pyvenv*/
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+.coverage.*
+nosetests.xml
 coverage.xml
-docs/_build/
-junit.xml
-node_modules
-pygameweb.egg-info
+htmlcov
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+.idea
+*.iml
+*.komodoproject
+
+# Complexity
+output/*.html
+output/*/index.html
+
+# Sphinx
+docs/_build
+
 .DS_Store
-.cache/
+*~
+.*.sw[po]
+.build
+.ve
 .env
-.hg/
-.hgignore
-frontend/
-graphic_design/
-nmig/
-*.sublime-project
-*.sublime-workspace
-readme.txt
-scripts
-.pytest_cache/
-notes.md
-pygame.sql
-.python-version
-.vscode/
+.cache
+.pytest
+.bootstrap
+.appveyor.token
+*.bak
+
+# pre-commit-vauxoo
+.bandit*
+.config/
+.editorconfig
+.eslintrc*
+.flake8*
+.isort.cfg
+.pre-commit*.yaml
+.prettierrc.yml
+.pylintrc*
+bandit*.yaml
+doc8.ini
+pyproject.toml
