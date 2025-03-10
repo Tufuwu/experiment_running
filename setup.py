@@ -1,85 +1,63 @@
-# Copyright (C) 2018 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+from setuptools import setup, Command
+from distutils.command.build import build as orig_build
 
-"""The setup.py file for Python Fire."""
+from subprocess import call
+import logging
+from os import path
+from glob import glob
 
-from setuptools import setup
 
-LONG_DESCRIPTION = """
-Python Fire is a library for automatically generating command line interfaces
-(CLIs) with a single line of code.
+completions_zsh = glob('completions/zsh/_*')
+completions_bash = glob('completions/bash/*')
+languages  = [path.splitext(path.split(po_file)[1])[0]
+              for po_file in glob('lang/*.po')]
 
-It will turn any Python module, class, object, function, etc. (any Python
-component will work!) into a CLI. It's called Fire because when you call Fire(),
-it fires off your command.
-""".strip()
 
-SHORT_DESCRIPTION = """
-A library for automatically generating command line interfaces.""".strip()
+class build(orig_build):
+    """Subclass build command to add a subcommand for building .mo files."""
+    sub_commands = orig_build.sub_commands + [('build_mo', None)]
 
-DEPENDENCIES = [
-    'termcolor',
-]
 
-TEST_DEPENDENCIES = [
-    'hypothesis',
-    'levenshtein',
-]
+class build_mo(Command):
 
-VERSION = '0.7.0'
-URL = 'https://github.com/google/python-fire'
+    """Create machine specific translation files (for i18n via gettext)."""
+
+    description = 'Compile .po files into .mo files'
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        for lang in languages:
+            po_file = 'lang/{}.po'.format(lang)
+            mo_file = 'build/locale/{}/LC_MESSAGES/udiskie.mo'.format(lang)
+            self.mkpath(path.dirname(mo_file))
+            self.make_file(
+                po_file, mo_file, self.make_mo,
+                [po_file, mo_file])
+
+    def make_mo(self, po_filename, mo_filename):
+        """Create a machine object (.mo) from a portable object (.po) file."""
+        try:
+            call(['msgfmt', po_filename, '-o', mo_filename])
+        except OSError as e:
+            # ignore failures since i18n support is optional:
+            logging.warning(e)
+
 
 setup(
-    name='fire',
-    version=VERSION,
-    description=SHORT_DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
-    url=URL,
-
-    author='David Bieber',
-    author_email='dbieber@google.com',
-    license='Apache Software License',
-
-    classifiers=[
-        'Development Status :: 4 - Beta',
-
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-
-        'License :: OSI Approved :: Apache Software License',
-
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
-        'Programming Language :: Python :: 3.13',
-
-        'Operating System :: OS Independent',
-        'Operating System :: POSIX',
-        'Operating System :: MacOS',
-        'Operating System :: Unix',
+    cmdclass={
+        'build': build,
+        'build_mo': build_mo,
+    },
+    data_files=[
+        ('share/bash-completion/completions', completions_bash),
+        ('share/zsh/site-functions', completions_zsh),
+        *[('share/locale/{}/LC_MESSAGES'.format(lang),
+           ['build/locale/{}/LC_MESSAGES/udiskie.mo'.format(lang)])
+          for lang in languages],
     ],
-
-    keywords='command line interface cli python fire interactive bash tool',
-
-    requires_python='>=3.7',
-    packages=['fire', 'fire.console'],
-
-    install_requires=DEPENDENCIES,
-    tests_require=TEST_DEPENDENCIES,
 )
