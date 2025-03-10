@@ -1,11 +1,48 @@
-# This workflows will upload a Python Package using Twine when a release is published
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
-
-name: Upload Python Package
-
+name: Tests
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
-  deploy:
+  core-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Before install
+        run: |
+          sudo apt-get -qq update;
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test;
+          sudo apt-get install gcc-4.8;
+          sudo apt-get install -y libeigen3-dev;
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-randomly wheel codecov
+
+      - name: Install The Walrus
+        run: |
+          pip install -e .
+
+      - name: Run tests
+        run: python3 -m pytest thewalrus --randomly-seed=137 --cov=thewalrus --cov-report term-missing --cov-report=html:coverage_html_report --cov-report=xml:coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml

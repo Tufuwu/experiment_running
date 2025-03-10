@@ -1,205 +1,146 @@
-HtHeatpump
-==========
+The Walrus
+##########
 
-.. image:: https://img.shields.io/pypi/v/htheatpump.svg
-  :target: https://pypi.org/project/htheatpump
-  :alt: PyPI version
+.. image:: https://github.com/XanaduAI/thewalrus/actions/workflows/tests.yml/badge.svg
+    :alt: Tests
+    :target: https://github.com/XanaduAI/thewalrus/actions/workflows/tests.yml
 
-.. image:: https://img.shields.io/pypi/pyversions/htheatpump.svg
-  :target: https://pypi.org/project/htheatpump
-  :alt: Python versions
+.. image:: https://img.shields.io/codecov/c/github/xanaduai/thewalrus/master.svg?style=flat
+    :alt: Codecov coverage
+    :target: https://codecov.io/gh/XanaduAI/thewalrus
 
-.. image:: https://img.shields.io/pypi/l/htheatpump.svg
-  :target: https://pypi.org/project/htheatpump
-  :alt: License
+.. image:: https://img.shields.io/codefactor/grade/github/XanaduAI/thewalrus/master?style=flat
+    :alt: CodeFactor Grade
+    :target: https://www.codefactor.io/repository/github/xanaduai/thewalrus
 
-.. image:: https://github.com/dstrigl/htheatpump/workflows/CI/badge.svg
-  :target: https://github.com/dstrigl/htheatpump/actions?query=workflow%3ACI
-  :alt: Build status
+.. image:: https://img.shields.io/readthedocs/the-walrus.svg?style=flat
+    :alt: Read the Docs
+    :target: https://the-walrus.readthedocs.io
 
-.. image:: https://readthedocs.org/projects/htheatpump/badge/?version=latest
-  :target: https://htheatpump.readthedocs.io/en/latest/?badge=latest
-  :alt: Documentation status
+.. image:: https://img.shields.io/pypi/pyversions/thewalrus.svg?style=flat
+    :alt: PyPI - Python Version
+    :target: https://pypi.org/project/thewalrus
 
-.. image:: https://pyup.io/repos/github/dstrigl/htheatpump/shield.svg
-  :target: https://pyup.io/repos/github/dstrigl/htheatpump
-  :alt: Updates
+.. image:: https://joss.theoj.org/papers/10.21105/joss.01705/status.svg
+    :alt: JOSS - The Journal of Open Source Software
+    :target: https://doi.org/10.21105/joss.01705
 
-
-Easy-to-use Python communication module for `Heliotherm <http://www.heliotherm.com/>`_ and
-`Brötje BSW NEO <https://www.broetje.de/>`_ heat pumps.
-
-
-* GitHub repo: https://github.com/dstrigl/htheatpump
-* Documentation: https://htheatpump.readthedocs.io
-* Free software: `GNU General Public License v3 <https://www.gnu.org/licenses/gpl-3.0.en.html>`_
-
-
-Introduction
-------------
-
-This library provides a pure Python interface to access `Heliotherm <http://www.heliotherm.com/>`_ and
-`Brötje BSW NEO <https://www.broetje.de/>`_ heat pumps
-over a serial connection. It's compatible with Python version 3.8, 3.9 and 3.10.
-
+A library for the calculation of hafnians, Hermite polynomials and Gaussian boson sampling. For more information, please see the `documentation <https://the-walrus.readthedocs.io>`_.
 
 Features
-~~~~~~~~
+========
 
-* read the manufacturer's serial number of the heat pump
-* read the software version of the heat pump
-* read and write the current date and time of the heat pump
-* read the fault list of the heat pump
-* query whether the heat pump is malfunctioning
-* query for several parameters of the heat pump
-* change parameter values of the heat pump
-* fast query of MP data points / parameters ("Web-Online")
-* read and write the time programs of the heat pump
+* Fast calculation of hafnians, loop hafnians, and torontonians of general and certain structured matrices.
 
+* An easy to use interface to use the loop hafnian for Gaussian quantum state calculations.
 
-Tested with [*]_
-~~~~~~~~~~~~~~~~
+* Sampling algorithms for hafnian and torontonians of graphs.
 
-* Heliotherm HP08S10W-WEB, SW 3.0.20
-* Heliotherm HP10S12W-WEB, SW 3.0.8
-* Heliotherm HP08E-K-BC, SW 3.0.7B
-* Heliotherm HP05S07W-WEB, SW 3.0.17 and SW 3.0.37
-* Heliotherm HP12L-M-BC, SW 3.0.21
-* Heliotherm HP07S08W-S-WEB, SW 2.03N
-* Heliotherm HP07S08W-WEB, SW 3.0.37
-* Heliotherm HP-30-L-M-WEB, SW 3.0.21
-* Brötje BSW NEO 8 SW 3.0.38
+* Efficient classical methods for approximating the hafnian of non-negative matrices.
 
-  .. [*] thanks to Kilian, Hans, Alois, Simon, Felix (`FelixPetriconi <https://github.com/FelixPetriconi>`_) and Matthias for contribution
+* Easy to use implementations of the multidimensional Hermite polynomials, which can also be used to calculate hafnians of all reductions of a given matrix.
 
 
 Installation
-------------
+============
 
-You can install or upgrade ``htheatpump`` with:
+The Walrus requires Python version 3.7, 3.8, 3.9, or 3.10. Installation of The Walrus, as
+well as all dependencies, can be done using pip:
+
+.. code-block:: bash
+
+    pip install thewalrus
+
+
+Compiling from source
+=====================
+
+The Walrus has the following dependencies:
+
+* `Python <http://python.org/>`_ >= 3.7
+* `NumPy <http://numpy.org/>`_  >= 1.19.2
+* `Numba <https://numba.pydata.org/>`_ >= 0.49.1
+* `SciPy <https://scipy.org/>`_ >=1.2.1
+* `SymPy <https://www.sympy.org/>`_ >=1.5.1
+* `Dask[delayed] <https://docs.dask.org/>`_
+
+You can compile the latest development version by cloning the git repository, and installing using
+pip in development mode.
 
 .. code-block:: console
 
-    $ pip install htheatpump --upgrade
+    $ git clone https://github.com/XanaduAI/thewalrus.git
+    $ cd thewalrus && python -m pip install -e .
 
-Or you can install from source with:
+
+Software tests
+==============
+
+To ensure that The Walrus library is working correctly after installation, the test
+suite can be run locally using pytest.
+
+Additional packages are required to run the tests. These dependencies can be found in
+``requirements-dev.txt`` and can be installed using ``pip``:
 
 .. code-block:: console
 
-    $ git clone https://github.com/dstrigl/htheatpump.git
-    $ cd htheatpump
-    $ python setup.py install
+    $ pip install -r requirements-dev.txt
+
+To run the tests, navigate to the source code folder and run the command
+
+.. code-block:: console
+
+    $ make test
 
 
-Getting started
----------------
+Documentation
+=============
 
-To use ``htheatpump`` in a project take a look on the following example. After establishing a connection
-with the Heliotherm heat pump one can interact with it by different functions like reading or writing
-parameters.
+The Walrus documentation is available online on `Read the Docs <https://the-walrus.readthedocs.io>`_.
 
-.. code:: python
+Additional packages are required to build the documentation locally as specified in ``doc/requirements.txt``.
+These packages can be installed using:
 
-    from htheatpump import HtHeatpump
+.. code-block:: console
 
-    hp = HtHeatpump("/dev/ttyUSB0", baudrate=9600)
-    try:
-        hp.open_connection()
-        hp.login()
-        # query for the outdoor temperature
-        temp = hp.get_param("Temp. Aussen")
-        print(temp)
-        # ...
-    finally:
-        hp.logout()  # try to logout for an ordinary cancellation (if possible)
-        hp.close_connection()
+    $ sudo apt install pandoc
+    $ pip install -r docs/requirements.txt
 
-.. code:: python
+To build the HTML documentation, go to the top-level directory and run the command
 
-    from htheatpump import AioHtHeatpump
+.. code-block:: console
 
-    hp = AioHtHeatpump("/dev/ttyUSB0", baudrate=9600)
-    try:
-        hp.open_connection()
-        await hp.login_async()
-        # query for the outdoor temperature
-        temp = await hp.get_param_async("Temp. Aussen")
-        print(temp)
-        # ...
-    finally:
-        await hp.logout_async()  # try to logout for an ordinary cancellation (if possible)
-        hp.close_connection()
+    $ make doc
 
-A full list of supported functions can be found in the ``htheatpump`` documentation at
-`readthedocs.io <https://htheatpump.readthedocs.io/en/latest/?badge=latest>`_.
+The documentation can then be found in the ``docs/_build/html/`` directory.
 
-There are also some sample scripts that are part of the ``htheatpump`` package and
-can be run immediately after installation, e.g.:
+Contributing to The Walrus
+==========================
 
-.. code-block:: shell
+We welcome contributions - simply fork The Walrus repository, and then make a pull request containing your contribution. All contributors to The Walrus will be listed as authors on the releases.
 
-    $ htquery --device /dev/ttyUSB1 "Temp. Aussen" "Stoerung"
-    Stoerung    : False
-    Temp. Aussen: 5.0
+We also encourage bug reports, suggestions for new features and enhancements, and even links to projects, applications or scientific publications that use The Walrus.
+
+Authors
+=======
+
+The Walrus is the work of `many contributors <https://github.com/XanaduAI/thewalrus/blob/master/.github/ACKNOWLEDGMENTS.md>`_.
+
+If you are doing research using The Walrus, please cite `our paper <https://joss.theoj.org/papers/10.21105/joss.01705>`_:
+
+ Brajesh Gupt, Josh Izaac and Nicolas Quesada. The Walrus: a library for the calculation of hafnians, Hermite polynomials and Gaussian boson sampling. Journal of Open Source Software, 4(44), 1705 (2019)
 
 
-Logging
-~~~~~~~
+Support
+=======
 
-This library uses the ``logging`` module. To set up logging to standard output, put
+- **Source Code:** https://github.com/XanaduAI/thewalrus
+- **Issue Tracker:** https://github.com/XanaduAI/thewalrus/issues
 
-.. code:: python
-
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
-
-at the beginning of your script.
-
-
-Disclaimer
-----------
-
-.. warning::
-
-   Please note that any incorrect or careless usage of this module as well as
-   errors in the implementation can damage your heat pump!
-
-   Therefore, the author does not provide any guarantee or warranty concerning
-   to correctness, functionality or performance and does not accept any liability
-   for damage caused by this module, examples or mentioned information.
-
-   **Thus, use it on your own risk!**
-
-
-Contributing
-------------
-
-Contributions are always welcome. Please review the
-`contribution guidelines <https://github.com/dstrigl/htheatpump/blob/master/CONTRIBUTING.rst>`_
-to get started.
-You can also help by `reporting bugs <https://github.com/dstrigl/htheatpump/issues/new>`_.
-
-
-Wanna support me?
------------------
-
-.. image:: https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png
-   :target: https://www.buymeacoffee.com/N362PLZ
-   :alt: Buy Me A Coffee
-
-
-Credits
--------
-
-* Created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-* Project dependencies scanned by `PyUp.io`_.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-.. _`PyUp.io`: https://pyup.io
+If you are having issues, please let us know by posting the issue on our Github issue tracker.
 
 
 License
--------
+=======
 
-Distributed under the terms of the `GNU General Public License v3 <https://www.gnu.org/licenses/gpl-3.0.en.html>`_.
+The Walrus is **free** and **open source**, released under the Apache License, Version 2.0.
