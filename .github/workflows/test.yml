@@ -1,52 +1,40 @@
-name: Linux FoxPuppet Tests
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
 on:
-    pull_request:
-      # Sequence of patterns matched against refs/heads
-      branches:
-        - main
-env:
-  MOZ_HEADLESS: 1
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    name: FoxPuppet Linting
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.92'
-      - name: Run Tests
-        shell: bash
-        run: make install_poetry lint
-  test:
-    needs: lint
+  build:
+
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        firefox: ['latest-beta', 'latest-devedition', 'latest-nightly', 'latest-esr', 'latest']
-    name: FoxPuppet Firefox Tests
+        python-version: ["3.9", "3.10", "3.11"]
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup firefox
-        id: setup-firefox
-        uses: browser-actions/setup-firefox@v1
-        with:
-          firefox-version: ${{ matrix.firefox }}
-      - run: |
-          echo Installed firefox versions: ${{ steps.setup-firefox.outputs.firefox-version }}
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.92'
-      - name: Run Tests
-        shell: bash
-        run: make install_poetry test
-          python-version: '3.92'
-        if: ${{ always() }}
-        with:
-          name:  HTML Test Report on firefox v${{ matrix.firefox }}
-          path: /home/runner/work/FoxPuppet/FoxPuppet/results/report.html
+    - uses: actions/checkout@v4
+    - name: Set up Python 3
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install poetry==2.0.0
+        poetry add flake8 pytest coverage
+        poetry install --no-interaction --no-root
+    - name: Lint with flake8
+      run: |
+        poetry run flake8 .
+    - name: unittests
+      run: |
+        poetry run coverage run -m pytest
+        poetry run coverage report -m
