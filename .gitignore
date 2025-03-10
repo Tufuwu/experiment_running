@@ -1,17 +1,13 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
-.idea/
-bin/
-version
-openapi_generator_cli/*.jar
-.DS_Store
+
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -23,11 +19,9 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -47,9 +41,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
+*,cover
 
 # Translations
 *.mo
@@ -57,52 +49,25 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
-db.sqlite3
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
-docs/_build/
+doc/_build/
+doc/modules/generated/
 
 # PyBuilder
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+.idea*
+.ipynb_checkpoints/
+*.swp
 
-# pyenv
-.python-version
+# Skip sphinx-gallery build directory
+doc/auto_examples
 
-# celery beat schedule file
-celerybeat-schedule
+.pytest_cache
+.vscode
+doc/backreferences
+doc/apiref/
 
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
+# Avoid poetry lockfiles
+poetry.lock

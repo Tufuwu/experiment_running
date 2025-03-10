@@ -1,29 +1,40 @@
-name: Release Package
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-# need to setup:
-# secrets.PYPI_API_TOKEN (See: https://pypi.org/help/#apitoken)
-# secrets.TESTPYPI_API_TOKEN (See: https://test.pypi.org/help/#apitoken)
+name: Python application
 
 on:
-  schedule:
-  - cron: 0 0 * * *
-  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
-  release:
+  build:
+
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
     steps:
     - uses: actions/checkout@v4
-    - name: Install poetry
-      run: pipx install poetry
-    - uses: actions/setup-python@v5
+    - name: Set up Python 3
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.13'
-        cache: poetry
-    - name: Setup Poetry to publish
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
       run: |
-        poetry install --no-interaction
-        poetry config pypi-token.testpypi '${{ secrets.TESTPYPI_API_TOKEN }}'
-        poetry config pypi-token.pypi '${{ secrets.PYPI_API_TOKEN }}'
-    - name: Publish package
-      run: python publish.py
+        python -m pip install poetry==2.0.0
+        poetry add flake8 pytest coverage
+        poetry install --no-interaction --no-root
+    - name: Lint with flake8
+      run: |
+        poetry run flake8 .
+    - name: unittests
+      run: |
+        poetry run coverage run -m pytest
+        poetry run coverage report -m
