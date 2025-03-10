@@ -1,83 +1,219 @@
-# Donkeycar: a python self driving library
+# Telingo
 
+*Telingo* is a solver for temporal programs. It leaverages *clingo*'s input
+language and scripting cababilities to parse and solve programs with temporal
+formulas. As such the input of *telingo* is valid *clingo* input supporting all
+*clingo* language features like for example aggregates; only the way programs
+are grounded and solved is adjusted.
 
-![Build Status](https://github.com/autorope/donkeycar/actions/workflows/python-package-conda.yml/badge.svg?branch=main)
-![Lint Status](https://github.com/autorope/donkeycar/actions/workflows/superlinter.yml/badge.svg?branch=main)
-![Release](https://img.shields.io/github/v/release/autorope/donkeycar)
+# Usage
 
-
-[![All Contributors](https://img.shields.io/github/contributors/autorope/donkeycar)](#contributors-)
-![Issues](https://img.shields.io/github/issues/autorope/donkeycar)
-![Pull Requests](https://img.shields.io/github/issues-pr/autorope/donkeycar?)
-![Forks](https://img.shields.io/github/forks/autorope/donkeycar)
-![Stars](https://img.shields.io/github/stars/autorope/donkeycar)
-![License](https://img.shields.io/github/license/autorope/donkeycar)
-
-![Discord](https://img.shields.io/discord/662098530411741184.svg?logo=discord&colorB=7289DA)
-
-Donkeycar is minimalist and modular self driving library for Python. It is developed for hobbyists and students with a focus on allowing fast experimentation and easy community contributions.  It is being actively used at the high school and university level for learning and research.  It offers a [rich graphical interface](https://docs.donkeycar.com/utility/ui/) and includes a [simulator](https://docs.donkeycar.com/guide/deep_learning/simulator/) so you can experiment with self-driving even before you build a robot.
-
-#### Quick Links
-* [Donkeycar Updates & Examples](http://donkeycar.com)
-* [Build instructions and Software documentation](http://docs.donkeycar.com)
-* [Discord / Chat](https://discord.gg/PN6kFeA)
-
-![donkeycar](https://github.com/autorope/donkeydocs/blob/master/docs/assets/build_hardware/donkey2.png)
-
-### Use Donkeycar if you want to:
-* Build a robot and teach it to drive itself.
-* Experiment with [autopilots](https://docs.donkeycar.com/guide/train_autopilot/), gps, computer vision and neural networks.
-* Compete in self driving races like [DIY Robocars](http://diyrobocars.com), including [online simulator races](https://docs.donkeycar.com/guide/deep_learning/virtual_race_league/) against competitors from around the world.
-* Participate in a vibrant online community learning cutting edge techology and having fun doing it.
-
-### What do you need to know before starting? (TL;DR nothing)
-Donkeycar is designed to be the 'Hello World' of automomous driving; it is simple yet flexible and powerful.  No specific prequisite knowledge is required, but it helps if you have some knowledge of:
-- [Python](https://docs.python.org/3.11/) programming.  You do not have to do any programming to use Donkeycar.  The file that you edit to configure your car, `myconfig.py`, is a Python file.  You mostly just uncomment the sections you want to change and edit them; you can avoid common mistakes if you know how Python [comments](https://www.w3schools.com/python/python_comments.asp) and [indentation](https://www.w3schools.com/python/python_syntax.asp) works.
-- Raspberry Pi.  The Raspberry Pi is the preferred on-board computer for a Donkeycar.  It is helpful to have setup and used a Raspberry Pi, but it is not necessary.  The Donkeycar documentation describes how to install the software on a RaspberryPi OS, but the specifics of how to install the RaspberryPi OS using [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and how to configure the Raspberry Pi using [raspi-config](https://www.raspberrypi.com/documentation/computers/configuration.html) is left to the Raspberry Pi documentation, which is extensive and quite good. I would recommend setting up your Raspberry Pi using the Raspberry Pi documentation and then play with it a little; use the browser to visit websites and watch YouTube videos, like this one taken at the [very first outdoor race](https://youtu.be/tjWmrCIKgnE) for a Donkeycar.  Use a text editor to write and save a file.  Open a terminal and learn how to navigate the file system (see below). If you are comfortable with the Raspberry Pi then you won't have to learn it and Donkeycar at the same time.
-- The Linux [command line shell](https://magpi.raspberrypi.com/articles/terminal-help).  The command line shell is also often called the terminal.  You will type commands into the terminal to install and start the Donkeycar software.  The Donkeycar documentation describes how this works.  It is also helpful to know how navigate the file system and how to list, copy and delete files and directories/folders. You may also access your car [remotely](https://www.raspberrypi.com/documentation/computers/remote-access.html); so you will want to know how to enable and connect WIFI and how to enable and start an [SSH](https://www.raspberrypi.com/documentation/computers/remote-access.html#ssh) terminal or [VNC](https://www.raspberrypi.com/documentation/computers/remote-access.html#vnc) session from your host computer to get a command line on your car.
-
-## Get driving.
-After [building a Donkeycar](https://docs.donkeycar.com/guide/build_hardware/) and [installing](https://docs.donkeycar.com/guide/install_software/) the Donkeycar software you can choose your autopilot [template](https://docs.donkeycar.com/guide/create_application/) and [calibrate](https://docs.donkeycar.com/guide/calibrate/) your car and [get driving](https://docs.donkeycar.com/guide/get_driving/)!
-
-## Modify your car's behavior.
-Donkeycar includes a number of pre-built [templates](https://docs.donkeycar.com/guide/create_application/) that make it easy to get started by just changing configuration. The pre-built templates are all you may ever need, but if you want to go farther you can change a template or make your own. A Donkeycar template is organized as a pipeline of software [parts](https://docs.donkeycar.com/parts/about/) that run in order on each pass through the vehicle loop, reading inputs and writing outputs to the vehicle's software memory as they run.  A typical car has a parts that:
-- Get images from a camera. Donkeycar supports lots of different kinds of [cameras](https://docs.donkeycar.com/parts/cameras/), including 3D cameras and [lidar](https://docs.donkeycar.com/parts/lidar/).
-- Get position readings from a GPS receiver.
-- Get steering and throttle inputs from a [game controller](https://docs.donkeycar.com/parts/controllers/) or RC controller.  Donkeycar support PS3, PS4, XBox, WiiU, Nimbus and Logitech Bluetooth game controllers and any game controller that works with RaspberryPi.  Donkeycar also implements a WebUI that allows any browser compatible game controller to be connected and also offers an onscreen touch controller that works with phones.
-- Control the car's drivetrain [motors](https://docs.donkeycar.com/parts/actuators/) for acceleration and steering. Donkeycar supports various drivetrains including the ESC/Steering-servo configuration that is common to most RC cars and Differential Drive configurations.
-- Save telemetry [data](https://docs.donkeycar.com/parts/stores/) such as camera images, steering and throttle inputs, lidar data, etc.
-- Drive the car on autopilot.  Donkey supports three kinds of [autopilots](https://docs.donkeycar.com/guide/train_autopilot/); a [deep-learning](https://docs.donkeycar.com/guide/deep_learning/train_autopilot/) autopilot, a [gps autopilot](https://docs.donkeycar.com/guide/path_follow/path_follow/) and a [computer vision](https://docs.donkeycar.com/guide/computer_vision/computer_vision/) autopilot.  The Deep Learning autopilot supports Tensorflow, Tensorflow Lite, and Pytorch and many model [architectures](https://docs.donkeycar.com/parts/keras/).
-
-If there isn't a Donkeycar part that does what you want then write your own [part](https://docs.donkeycar.com/parts/about/#parts) and add it to a vehicle [template](https://docs.donkeycar.com/parts/about/).
-
-```python
-#Define a vehicle to take and record pictures 10 times per second.
-
-import time
-from donkeycar import Vehicle
-from donkeycar.parts.cv import CvCam
-from donkeycar.parts.tub_v2 import TubWriter
-V = Vehicle()
-
-IMAGE_W = 160
-IMAGE_H = 120
-IMAGE_DEPTH = 3
-
-#Add a camera part
-cam = CvCam(image_w=IMAGE_W, image_h=IMAGE_H, image_d=IMAGE_DEPTH)
-V.add(cam, outputs=['image'], threaded=True)
-
-#warmup camera
-while cam.run() is None:
-    time.sleep(1)
-
-#add tub part to record images
-tub = TubWriter(path='./dat', inputs=['image'], types=['image_array'])
-V.add(tub, inputs=['image'], outputs=['num_records'])
-
-#start the drive loop at 10 Hz
-V.start(rate_hz=10)
+```
+telingo --help
+telingo examples/example1.lp
 ```
 
-See [home page](http://donkeycar.com), [docs](http://docs.donkeycar.com)
-or join the [Discord server](http://www.donkeycar.com/community.html) to learn more.
+To use *telingo* directly from source run `python -m telingo` from the
+project's root directory.
+
+# Installation
+
+Either run *telingo* directly from source or install it by the usual means
+provided by Python. We also provide anaconda packages for easy installation of
+all dependencies:
+
+- <https://anaconda.org/potassco/telingo>
+
+# Input
+
+To refer to an atom in the previous state, the atom name has to be prefixed
+with a prime, e.g. - `'p(1)`. To refer to an atom in the next state, the atom
+name has to be suffixed with a prime, e.g. - `p'(1)`. An arbitrary number of
+primes can be used. If both leading and trailing primes are used then this is
+equivalent to removing the lesser amount of primes from both sides.
+
+The `_` can be used as an initially operator. For example `_p` evaluates to
+true if `p` holds in the initial state. It can be used wherever past operators
+can be used.
+
+Atoms referring to the future are only accepted in heads of normal rules and
+constraints. Atoms referring to the past are only accepted in rule bodies (and
+negative rule heads).
+
+The following program parts are accepted:
+
+- `#program initial.` which applies only to the first state
+- `#program always.` which applies to each state
+- `#program dynamic.` which applies to all except the first state
+- `#program final.` which applies only to the last state
+
+The following temporal formulas are supported in rule heads and body literals:
+- &initial (true in the initial state)
+- &final (true in the final state)
+
+The following temporal formulas are accepted in constraints and behind default
+negation between the braces of theory atoms of form `&tel { ... }` (see the
+second example below). Formulas marked with *[head]* can also be used in `&tel`
+atoms in rule heads:
+
+- Boolean formulas
+  - `a & b` (conjunction) *[head]*
+  - `a | b` (disjunction) *[head]*
+  - `a <- b` (left implication)
+  - `a -> b` (right implication)
+  - `a <> b` (equivalence)
+  - `~ a` (negation) *[head]*
+- Formulas referring to the past
+  - `< a` (previous)
+  - `<: a` (weak previous)
+  - `a <* b` (trigger)
+  - `<* b` (always before)
+  - `a <? b` (since)
+  - `<? b` (eventually before)
+  - `a <; b` (sequence: `a & (< b)`)
+  - `a <:; b` (sequence: `a & (<: b)`)
+- Formulas referring to the future
+  - `> a` (next) *[head]*
+  - `>: a` (weak next) *[head]*
+  - `a >* b` (release) *[head]*
+  - `>* b` (always after) *[head]*
+  - `a >? b` (until) *[head]*
+  - `>? b` (eventually after) *[head]*
+  - `a ;> b` (sequence: `a & (> b)`) *[head]*
+  - `a ;>: b` (sequence: `a & (>: b)`) *[head]*
+- Other formulas
+  - `&true` (Boolean constant true) *[head]*
+  - `&false` (`~ &true`) *[head]*
+  - `&initial` (`~ < &true`) *[head]*
+  - `&final` (`~ > &true`) *[head]*
+  - `<< p` (initially: `<* (~ &initial | p)`)
+  - `>> p` (finally: `>* (~ &final | p)`)
+
+The elements of `&tel` atoms are treated like conditional literals in *clingo*.
+The rule `:- &tel { p(X) : q(X) }.` is equivalent to `:- p(X) : q(X).`. At the
+moment conditions are only supported in rule bodies; future *telingo* versions
+might add support for conditions in rule heads.
+
+## Example I
+
+The following temporal program executes one of the `shoot`, `load`, or `wait`
+actions in each time step and updates the `loaded` and `unloaded` fluents
+accordingly.
+
+```
+#program dynamic.
+shoot | load | wait.
+
+loaded :- load.
+loaded :- 'loaded, not unloaded.
+unloaded :- shoot, 'loaded.
+unloaded :- 'unloaded, not loaded.
+
+:- load, 'loaded.
+
+#program initial.
+unloaded.
+```
+
+By default *telingo* stops unfolding states as soon as an answer set is found.
+Running with option `--imin=2` results in the following output:
+
+```
+Solving...
+Answer: 1
+ State 0:
+  unloaded
+Solving...
+Answer: 1
+ State 0:
+  unloaded
+ State 1:
+  shoot
+  unloaded
+SATISFIABLE
+```
+
+The output shows that two states have been unfolded on after the other. For the
+first answer, there was only one state, the initial situation, where the gun
+was unloaded. In the second answer, the second state has been unfolded and the
+gun been shot (even though unloaded).
+
+## Example II
+
+The following example modifies the above program to encode that the gun breaks
+if there were two shots without loading the gun. Furthermore, its last
+integrity constraint selects traces where the loaded gun did not shoot because
+it broke.
+
+```
+#program dynamic.
+shoot | load | wait.
+
+loaded :- load.
+loaded :- 'loaded, not unloaded.
+unloaded :- shoot, 'loaded, not broken.
+unloaded :- 'unloaded, not loaded.
+
+:- load, 'loaded.
+
+broken :- shoot, not not &tel { <* unloaded & < <? shoot }.
+broken :- 'broken.
+
+#program initial.
+unloaded.
+
+:- &tel { >*(~loaded | ~shoot) }.
+```
+
+Output:
+
+```
+Solving...
+Solving...
+Solving...
+Solving...
+Solving...
+Answer: 1
+ State 0:
+  unloaded
+ State 1:
+  shoot
+  unloaded
+ State 2:
+  broken
+  shoot
+  unloaded
+ State 3:
+  broken
+  load
+  loaded
+ State 4:
+  broken
+  loaded
+  shoot
+SATISFIABLE
+```
+
+# Dynamic Logic
+
+Dynamic formulas are accepted in constraints and behind default
+negation between the braces of theory atoms of form `&del { ... }`   
+
+Dynamic formulas are constructed by the box (always) and diamond (eventually) operators: 
+
+* `.>*` (infix) for box operator, so that [p] q becomes p .>* q
+* `.>?` (infix) for diamond operator, so that \<p> q becomes p .>?  q
+
+Path expressions are formed with: 
+
+* `*` (prefix) Kleene star
+* `?` (prefix) test
+* `+` (infix)  disjunction
+* `;;`(infix)  sequence
+* `&true` = \top 
+
+**The path expression is required to be in [normal form](https://www.cs.uni-potsdam.de/wv/publications/DBLP_conf/lpnmr/CabalarDS19.pdf).**
+
+**Examples:**   
+* `&del{*(?a ;; &true) .>? b} ` for `<(a?;T)*>b`   
+* `&del{?a + ?b .>* c}` for `[a?+b?]c`
