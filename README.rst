@@ -1,161 +1,185 @@
-Python Wrapper for NVD3 - It's time for beautiful charts
-========================================================
+pygelf
+======
 
-:Description: Python-nvd3 is a wrapper for NVD3 graph library
-:NVD3: NVD3 http://nvd3.org/
-:D3: Data-Driven Documents http://d3js.org/
-:Maintainers: Areski_ & Oz_
-:Contributors: `list of contributors <https://github.com/areski/python-nvd3/graphs/contributors>`_
+.. image:: https://github.com/keeprocking/pygelf/actions/workflows/tests.yml/badge.svg?branch=master
+   :target: https://github.com/keeprocking/pygelf/actions
+.. image:: https://coveralls.io/repos/github/keeprocking/pygelf/badge.svg?branch=master
+   :target: https://coveralls.io/github/keeprocking/pygelf?branch=master
+.. image:: https://badge.fury.io/py/pygelf.svg
+   :target: https://pypi.python.org/pypi/pygelf
+.. image:: https://img.shields.io/pypi/dm/pygelf
+   :target: https://pypi.python.org/pypi/pygelf
 
-.. _Areski: https://github.com/areski/
-.. _Oz: https://github.com/oz123/
+Python logging handlers with GELF (Graylog Extended Log Format) support.
 
-.. image:: https://coveralls.io/repos/areski/python-nvd3/badge.png?branch=develop
-  :target: https://coveralls.io/r/areski/python-nvd3?branch=develop
+Currently TCP, UDP, TLS (encrypted TCP) and HTTP logging handlers are supported.
 
-.. image:: https://img.shields.io/pypi/v/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Latest Version
+Get pygelf
+==========
+.. code:: python
 
-.. image:: https://img.shields.io/pypi/dm/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Downloads
+    pip install pygelf
 
-.. image:: https://img.shields.io/pypi/pyversions/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Supported Python versions
+Usage
+=====
 
-.. image:: https://img.shields.io/pypi/l/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: License
+.. code:: python
 
-NVD3 is an attempt to build re-usable charts and chart components
-for d3.js without taking away the power that d3.js offers you.
-
-Python-NVD3 makes your life easy! You write Python and the library
-renders JavaScript for you!
-These graphs can be part of your web application:
-
- .. image:: https://raw.githubusercontent.com/areski/python-nvd3/develop/docs/showcase/multiple-charts.png
+    from pygelf import GelfTcpHandler, GelfUdpHandler, GelfTlsHandler, GelfHttpHandler, GelfHttpsHandler
+    import logging
 
 
-Want to try it yourself? Install python-nvd3, enter your python shell and try this quick demo::
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger()
+    logger.addHandler(GelfTcpHandler(host='127.0.0.1', port=9401))
+    logger.addHandler(GelfUdpHandler(host='127.0.0.1', port=9402))
+    logger.addHandler(GelfTlsHandler(host='127.0.0.1', port=9403))
+    logger.addHandler(GelfHttpHandler(host='127.0.0.1', port=9404))
+    logger.addHandler(GelfHttpsHandler(host='127.0.0.1', port=9405))
 
-    >>> from nvd3 import pieChart
-    >>> chart_name = 'pieChart'
-    >>> chart = pieChart(name=chart_name, color_category='category20c', height=450, width=450)
-    >>> xdata = ["Orange", "Banana", "Pear", "Kiwi", "Apple", "Strawberry", "Pineapple"]
-    >>> ydata = [3, 4, 0, 1, 5, 7, 3]
-    >>> extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
-    >>> chart.add_serie(y=ydata, x=xdata, extra=extra_serie)
-    >>> chart.buildcontent()
-    >>> print chart.htmlcontent
+    logger.info('hello gelf')
 
+Message structure
+=================
 
-This will output the following HTML to render a live chart. The HTML could be
-stored into a HTML file, used in a Web application, or even used via Ipython Notebook::
+According to the GELF spec, each message has the following mandatory fields:
 
-    <div id="pieChart"><svg style="width:450px;height:450px;"></svg></div>
-    <script>
-    data_pieChart=[{"values": [{"value": 3, "label": "Orange"},
-                   {"value": 4, "label": "Banana"},
-                   {"value": 0, "label": "Pear"},
-                   {"value": 1, "label": "Kiwi"},
-                   {"value": 5, "label": "Apple"},
-                   {"value": 7, "label": "Strawberry"},
-                   {"value": 3, "label": "Pineapple"}], "key": "Serie 1"}];
+- **version**: '1.1', can be overridden when creating a logger
+- **short_message**: the log message itself
+- **timestamp**: current timestamp
+- **level**: syslog-compliant_ log level number (e.g. WARNING will be sent as 4)
+- **host**: hostname of the machine that sent the message
+- **full_message**: this field contains stack trace and is being written **ONLY** when logging an exception, e.g.
 
-    nv.addGraph(function() {
-        var chart = nv.models.pieChart();
-        chart.margin({top: 30, right: 60, bottom: 20, left: 60});
-        var datum = data_pieChart[0].values;
-                chart.tooltipContent(function(key, y, e, graph) {
-                    var x = String(key);
-                    var y =  String(y)  + ' cal';
-                    tooltip_str = '<center><b>'+x+'</b></center>' + y;
-                    return tooltip_str;
-                });
-            chart.showLegend(true);
-            chart.showLabels(true);
-            chart.donut(false);
-        chart
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value });
-        chart.width(450);
-        chart.height(450);
-        d3.select('#pieChart svg')
-            .datum(datum)
-            .transition().duration(500)
-            .attr('width', 450)
-            .attr('height', 450)
-            .call(chart);
-    });
-    </script>
+.. code:: python
 
+    try:
+        1/0
+    except ZeroDivisionError as e:
+        logger.exception(e)
 
-Documentation
--------------
+.. _syslog-compliant: https://en.wikipedia.org/wiki/Syslog#Severity_level
 
-Check out the documentation on `Read the Docs`_ for some live Chart examples!
+In debug mode (when handler was created with debug=True option) each message contains some extra fields (which are pretty self-explanatory): 
 
-.. _Read the Docs: http://python-nvd3.readthedocs.org
+- **_file**
+- **_line**
+- **_module**
+- **_func**
+- **_logger_name**
 
+Configuration
+=============
 
-Installation
-------------
+Each handler has the following parameters:
 
-Install, upgrade and uninstall python-nvd3 with these commands::
+- **host**: IP address of the GELF input
+- **port**: port of the GELF input
+- **debug** (False by default): if true, each log message will include debugging info: module name, file name, line number, method name
+- **version** ('1.1' by default): GELF protocol version, can be overridden
+- **include_extra_fields** (False by default): if true, each log message will include all the extra fields set to LogRecord
+- **json_default** (:code:`str` with exception for several :code:`datetime` objects): function that is called for objects that cannot be serialized to JSON natively by python. Default implementation is custom function that returns result of :code:`isoformat()` method for :code:`datetime.datetime`, :code:`datetime.time`, :code:`datetime.date` objects and result of :code:`str(obj)` call for other objects (which is string representation of an object with fallback to :code:`repr`)
 
-    $ pip install python-nvd3
-    $ pip install --upgrade python-nvd3
-    $ pip uninstall python-nvd3
+Also, there are some handler-specific parameters.
 
+UDP:
 
-Dependencies
-------------
+- **chunk\_size** (1300 by default) - maximum length of the message. If log length exceeds this value, it splits into multiple chunks (see https://www.graylog.org/resources/gelf/ section "chunked GELF") with the length equals to this value. This parameter must be less than the MTU_. If the logs don't seem to be delivered, try to reduce this value.
+- **compress** (True by default) - if true, compress log messages before sending them to the server
 
-D3 and NvD3 can be installed through bower (which itself can be installed through npm).
-See http://bower.io/ and https://npmjs.org for further information.
-To install bower globally execute::
+.. _MTU: https://en.wikipedia.org/wiki/Maximum_transmission_unit
 
-    $ npm install -g bower
+TLS:
 
-Note : you might prefer to save your npm dependencies locally in a ``package.json`` file.
+- **validate** (False by default) - if true, validate server certificate. If server provides a certificate that doesn't exist in **ca_certs**, you won't be able to send logs over TLS
+- **ca_certs** (None by default) - path to CA bundle file. This parameter is required if **validate** is true.
+- **certfile** (None by default) - path to certificate file that will be used to identify ourselves to the remote endpoint. This is necessary when the remote server has client authentication required. If **certfile** contains the private key, it should be placed before the certificate.
+- **keyfile** (None by default) - path to the private key. If the private key is stored in **certfile** this parameter can be None.
 
-Then in the directory where you will use python-nvd3, just execute the following commands::
+HTTP:
 
-    $ bower install d3#3.5.17
-    $ bower install nvd3#1.8.6
+- **compress** (True by default) - if true, compress log messages before sending them to the server
+- **path** ('/gelf' by default) - path of the HTTP input (http://docs.graylog.org/en/latest/pages/sending_data.html#gelf-via-http)
+- **timeout** (5 by default) - amount of seconds that HTTP client should wait before it discards the request if the server doesn't respond
 
-This will create a directory "bower_components" where d3 & nvd3 will be saved.
+HTTPS:
 
-Note : you might prefer to save your bower dependencies locally in a ``bower.json`` file.
-You can also configure the directory where your bower dependencies will be
-saved adding a ``.bowerrc`` file in your project root directory.
+- **compress** (True by default) - if true, compress log messages before sending them to the server
+- **path** ('/gelf' by default) - path of the HTTP input (http://docs.graylog.org/en/latest/pages/sending_data.html#gelf-via-http)
+- **timeout** (5 by default) - amount of seconds that HTTP client should wait before it discards the request if the server doesn't respond
+- **validate** - whether or not to validate the input's certificate
+- **ca_certs** - path to the CA certificate file that signed the certificate the input is using
+- **certfile** - not yet used
+- **keyfile** - not yet used
+- **keyfile_password** - not yet used
 
+Static fields
+=============
 
-Django Wrapper
---------------
+If you need to include some static fields into your logs, simply pass them to the handler constructor. Each additional field should start with underscore. You can't add field '\_id'.
 
-There is also a django wrapper for nvd3 available:
-https://github.com/areski/django-nvd3
+Example:
 
+.. code:: python
 
-IPython Notebooks
------------------
+    handler = GelfUdpHandler(host='127.0.0.1', port=9402, _app_name='pygelf', _something=11)
+    logger.addHandler(handler)
 
-Python-NVD3 works nicely within IPython Notebooks (thanks to @jdavidheiser)
+Dynamic fields
+==============
 
-See the examples directory for an Ipython notebook with python-nvd3.
+If you need to include some dynamic fields into your logs, add them to record by using LoggingAdapter or logging.Filter and create handler with include_extra_fields set to True.
+All the non-trivial fields of the record will be sent to graylog2 with '\_' added before the name
 
+Example:
 
-License
--------
+.. code:: python
 
-Python-nvd3 is licensed under MIT, see `MIT-LICENSE.txt`.
+    class ContextFilter(logging.Filter):
 
+        def filter(self, record):
+            record.job_id = threading.local().process_id
+            return True
 
-Maintainers
------------
+    logger.addFilter(ContextFilter())
+    handler = GelfUdpHandler(host='127.0.0.1', port=9402, include_extra_fields=True)
+    logger.addHandler(handler)
 
-If you want to help maintain this project, please get in touch.
+Defining fields from environment
+================================
+
+If you need to include some fields from the environment into your logs, add them to record by using `additional_env_fields`.
+
+The following example will add an `env` field to the logs, taking its value from the environment variable `FLASK_ENV`.
+
+.. code:: python
+
+    handler = GelfTcpHandler(host='127.0.0.1', port=9402, include_extra_fields=True, additional_env_fields={'env': 'FLASK_ENV'})
+    logger.addHandler(handler)
+
+The following can also be used in defining logging from configuration files (yaml/ini):
+
+.. code:: ini
+
+    [formatters]
+    keys=standard
+
+    [formatter_standard]
+    class=logging.Formatter
+    format=%(message)s
+
+    [handlers]
+    keys=graylog
+
+    [handler_graylog]
+    class=pygelf.GelfTcpHandler
+    formatter=standard
+    args=('127.0.0.1', '12201')
+    kwargs={'include_extra_fields': True, 'debug': True, 'additional_env_fields': {'env': 'FLASK_ENV'}}
+
+    [loggers]
+    keys=root
+
+    [logger_root]
+    level=WARN
+    handlers=graylog

@@ -1,74 +1,28 @@
-#! /usr/bin/env python
-# coding=utf-8
+from setuptools import setup
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-
-with open('README.rst') as readme_file:
-    readme = readme_file.read()
-
-with open('CHANGELOG.rst') as history_file:
-    history = history_file.read().replace('.. :changelog:', '')
-
-requirements = [
-]
-
-test_requirements = [
-    # TODO: put package test requirements here
-]
 
 setup(
-    name='python-nvd3',
-    version='0.16.0',
-    description="Python NVD3 - Chart Library for d3.js",
-    long_description=readme + '\n\n' + history,
-    keywords='plot, graph, nvd3, d3',
-    author='Belaid Arezqui',
-    author_email='areski@gmail.com',
-    url='http://github.com/areski/python-nvd3',
-    license="MIT",
-    py_modules=['nvd3'],
-    namespace_packages=[],
-    test_suite='tests',
-    packages=[
-        'nvd3',
-    ],
-    include_package_data=True,
-    zip_safe=False,
-    install_requires=[
-        'python-slugify>=1.2.5',
-        'Jinja2>=2.8'
-        # -*- Extra requirements: -*-
-    ],
-    entry_points={
-        'console_scripts': [
-            'nvd3 = nvd3.NVD3Chart:_main',
-        ],
-    },
+    name='pygelf',
+    version='0.4.2',
+    packages=['pygelf'],
+    description='Logging handlers with GELF support',
+    keywords='logging udp tcp ssl tls graylog2 graylog gelf',
+    author='Ivan Mukhin',
+    author_email='muhin.ivan@gmail.com',
+    url='https://github.com/keeprocking/pygelf',
+    long_description=open('README.rst').read(),
+    license='MIT',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
-        'Topic :: Multimedia :: Graphics :: Presentation',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
+        'Topic :: System :: Logging',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 )
