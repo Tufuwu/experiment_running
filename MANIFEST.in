@@ -1,6 +1,20 @@
-include LICENSE
+include AUTHORS.rst
+include CONTRIBUTING.rst
+include HISTORY.rst
 include README.rst
-include changelog
-include markup2html.py
-recursive-include docs *.rst conf.py
-recursive-include tests *.py
+include LICENSE
+
+include .editorconfig
+include .flake8
+include tox.ini
+
+recursive-include htheatpump *
+recursive-include requirements *.pip
+recursive-include samples *.py *.txt
+recursive-include tests *
+recursive-include docs *.rst conf.py Makefile make.bat
+
+global-exclude __pycache__
+global-exclude .coverage
+global-exclude *.py[co]
+global-exclude .git*
