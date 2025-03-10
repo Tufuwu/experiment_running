@@ -1,98 +1,140 @@
-.. mir_eval documentation master file
+.. OpenCage Geocoder documentation master file, created by
+   sphinx-quickstart on Sat Jun  7 14:38:18 2014.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-mir_eval Documentation
-======================
-
-**mir_eval** is a Python library which provides a transparent, standardized, and straightforward way to evaluate Music Information Retrieval systems.
-
-If you use **mir_eval** in a research project, please cite the following paper:
-
-  C. Raffel, B. McFee, E. J. Humphrey, J. Salamon, O. Nieto, D. Liang, and D. P. W. Ellis, `"mir_eval: A Transparent Implementation of Common MIR Metrics" <http://colinraffel.com/publications/ismir2014mir_eval.pdf>`_, Proceedings of the 15th International Conference on Music Information Retrieval, 2014.
-  
-Installation
-============
-
-The simplest way to install **mir_eval** is via ``pip``:
-
-.. code-block:: console
-
-   python -m pip install mir_eval
-
-If you use `conda` packages, **mir_eval** is available on conda-forge:
-
-.. code-block:: console
-
-   conda install -c conda-forge mir_eval
-
-Alternatively, you can install from source:
-
-.. code-block:: console
-
-   python setup.py install
-
-If you don't use Python and want to get started as quickly as possible, you might consider using `Anaconda <https://www.anaconda.com/download>`_ which makes it easy to install a Python environment which can run **mir_eval**.
-
-Using mir_eval
-==============
-
-Once installed, you can import **mir_eval** in your code:
-
-.. code-block:: python
-
-   import mir_eval
-
-For example, to evaluate beat tracking:
-
-.. code-block:: python
-
-   reference_beats = mir_eval.io.load_events('reference_beats.txt')
-   estimated_beats = mir_eval.io.load_events('estimated_beats.txt')
-   scores = mir_eval.beat.evaluate(reference_beats, estimated_beats)
-
-At the end of execution, ``scores`` will be a dict containing scores 
-for all of the metrics implemented in `mir_eval.beat`.  
-The keys are metric names and values are the scores achieved.
-
-You can also load in the data, do some preprocessing, and call specific metric functions from the appropriate submodule like so:
-
-.. code-block:: python
-
-   reference_beats = mir_eval.io.load_events('reference_beats.txt')
-   estimated_beats = mir_eval.io.load_events('estimated_beats.txt')
-   # Crop out beats before 5s, a common preprocessing step
-   reference_beats = mir_eval.beat.trim_beats(reference_beats)
-   estimated_beats = mir_eval.beat.trim_beats(estimated_beats)
-   # Compute the F-measure metric and store it in f_measure
-   f_measure = mir_eval.beat.f_measure(reference_beats, estimated_beats)
-
-Alternatively, you can use the evaluator scripts which allow you to run evaluation from the command line, without writing any code.
-These scripts are are available here:
-
-https://github.com/craffel/mir_evaluators
-
-
-API Reference
-=============
-
-The structure of the **mir_eval** Python module is as follows:
-Each MIR task for which evaluation metrics are included in **mir_eval** is given its own submodule, and each metric is defined as a separate function in each submodule.
-Every metric function includes detailed documentation, example usage, input validation, and references to the original paper which defined the metric (see the subsections below).
-The task submodules also all contain a function ``evaluate()``, which takes as input reference and estimated annotations and returns a dictionary of scores for all of the metrics implemented (for casual users, this is the place to start).
-Finally, each task submodule also includes functions for common data pre-processing steps.
-
-**mir_eval** also includes the following additional submodules:
-
-* :mod:`mir_eval.io` which contains convenience functions for loading in task-specific data from common file formats
-* :mod:`mir_eval.util` which includes miscellaneous functionality shared across the submodules
-* :mod:`mir_eval.sonify` which implements some simple methods for synthesizing annotations of various formats for "evaluation by ear".
-* :mod:`mir_eval.display` which provides functions for plotting annotations for various tasks.
-
-Detailed API documentation for each submodule is available in the API Reference section.
-See the :doc:`API Reference <api/index>` for full details.
+Welcome to OpenCage Geocoder's documentation!
+=============================================
 
 .. toctree::
-   :caption: mir_eval
    :maxdepth: 2
 
-   api/index
-   changes
+   hacking
+
+.. autoclass:: opencage.geocoder.OpenCageGeocode
+    :members:
+
+.. autoclass:: opencage.geocoder.InvalidInputError
+
+.. autoclass:: opencage.geocoder.RateLimitExceededError
+
+.. autoclass:: opencage.geocoder.UnknownError
+
+Sample Return Format
+--------------------
+
+Results from OpenCage Geocode
+
+    >>> geocoder = OpenCageGeocode('your-key-here')
+    >>> geocoder.geocode("London")
+    [{u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 51.6918741, 'lng': 0.3340155},
+                  u'southwest': {'lat': 51.2867602, 'lng': -0.510375}},
+      u'components': {u'city': u'London',
+                      u'country': u'United Kingdom',
+                      u'country_code': u'gb',
+                      u'county': u'London',
+                      u'state': u'England',
+                      u'state_district': u'Greater London'},
+      u'formatted': u'London, London, Greater London, England, United Kingdom, gb',
+      u'geometry': {'lat': 51.5073219, 'lng': -0.1276474}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 43.148097, 'lng': -81.0860295},
+                  u'southwest': {'lat': 42.828097, 'lng': -81.4060295}},
+      u'components': {u'city': u'London',
+                      u'country': u'Canada',
+                      u'country_code': u'ca',
+                      u'state': u'Ontario'},
+      u'formatted': u'London, Ontario, Canada, ca',
+      u'geometry': {'lat': 42.988097, 'lng': -81.2460295}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 37.15226, 'lng': -84.0359569},
+                  u'southwest': {'lat': 37.079759, 'lng': -84.1262619}},
+      u'components': {u'city': u'London',
+                      u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Laurel County',
+                      u'state': u'Kentucky'},
+      u'formatted': u'London, Laurel County, Kentucky, United States of America, us',
+      u'geometry': {'lat': 37.1289771, 'lng': -84.0832646}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 43.0677775, 'lng': -88.9928881},
+                  u'southwest': {'lat': 43.0277775, 'lng': -89.0328881}},
+      u'components': {u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Dane County',
+                      u'hamlet': u'London',
+                      u'state': u'Wisconsin'},
+      u'formatted': u'London, Dane County, Wisconsin, United States of America, us',
+      u'geometry': {'lat': 43.0477775, 'lng': -89.0128881}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 39.921786, 'lng': -83.3899969},
+                  u'southwest': {'lat': 39.85928, 'lng': -83.4789229}},
+      u'components': {u'city': u'London',
+                      u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Madison County',
+                      u'state': u'Ohio'},
+      u'formatted': u'London, Madison County, Ohio, United States of America, us',
+      u'geometry': {'lat': 39.8864493, 'lng': -83.448253}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 36.4884367, 'lng': -119.4385394},
+                  u'southwest': {'lat': 36.4734452, 'lng': -119.4497698}},
+      u'components': {u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Tulare County',
+                      u'state': u'California',
+                      u'village': u'London'},
+      u'formatted': u'London, Tulare County, California, United States of America, us',
+      u'geometry': {'lat': 36.4760619, 'lng': -119.4431785}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 35.33814, 'lng': -93.1873749},
+                  u'southwest': {'lat': 35.315577, 'lng': -93.2726929}},
+      u'components': {u'city': u'London',
+                      u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Pope County',
+                      u'state': u'Arkansas'},
+      u'formatted': u'London, Pope County, Arkansas, United States of America, us',
+      u'geometry': {'lat': 35.326859, 'lng': -93.2405016007635}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 38.2143567, 'lng': -81.3486944},
+                  u'southwest': {'lat': 38.1743567, 'lng': -81.3886944}},
+      u'components': {u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Kanawha County',
+                      u'hamlet': u'London',
+                      u'state': u'West Virginia'},
+      u'formatted': u'London, Kanawha County, West Virginia, United States of America, us',
+      u'geometry': {'lat': 38.1943567, 'lng': -81.3686944}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 32.2509892, 'lng': -94.9243839},
+                  u'southwest': {'lat': 32.2109892, 'lng': -94.9643839}},
+      u'components': {u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Rusk County',
+                      u'hamlet': u'London',
+                      u'state': u'Texas'},
+      u'formatted': u'London, Rusk County, Texas, United States of America, us',
+      u'geometry': {'lat': 32.2309892, 'lng': -94.9443839}},
+     {u'annotations': {},
+      u'bounds': {u'northeast': {'lat': 40.9303338, 'lng': -82.6093412},
+                  u'southwest': {'lat': 40.8903338, 'lng': -82.6493412}},
+      u'components': {u'country': u'United States of America',
+                      u'country_code': u'us',
+                      u'county': u'Richland County',
+                      u'hamlet': u'London',
+                      u'state': u'Ohio'},
+      u'formatted': u'London, Richland County, Ohio, United States of America, us',
+      u'geometry': {'lat': 40.9103338, 'lng': -82.6293412}}]
+
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
