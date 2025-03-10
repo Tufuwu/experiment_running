@@ -1,54 +1,25 @@
-[build-system]
-requires = ["hatchling", "hatch-requirements-txt"]
-build-backend = "hatchling.build"
-
 [project]
-name = "sphinx-multiversion"
-dynamic = ["version", "dependencies"]
-description = "Add support for multiple versions to sphinx"
-readme = "README.md"
-license = "BSD-2-Clause"
+name = "tftb"
+version = "0.2.0"
+description = "A Python library for time-frquency analysis and visualization."
 authors = [
-    { name = "Jan Holthuis", email = "holthuis.jan@googlemail.com" },
+    {name = "deshpande.jaidev@gmail.com",email = "deshpande.jaidev@gmail.com"}
 ]
-classifiers = [
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-]
-
-[project.scripts]
-sphinx-multiversion = "sphinx_multiversion:main"
-
-[project.urls]
-Homepage = "https://holzhaus.github.io/sphinx-multiversion/"
-
-[tool.hatch.version]
-path = "sphinx_multiversion/__init__.py"
-
-[tool.hatch.metadata.hooks.requirements_txt]
-files = ["requirements.txt"]
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/sphinx_multiversion",
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy (>=1.22.4,<2.0.0)",
+    "scipy (>=1.9.0,<2.0.0)",
+    "matplotlib (>=3.6.0,<4.0.0)"
 ]
 
-[tool.bandit]
-skips = [
-    # Asserts are actually fine for checking the developer's assumptions, we
-    # "just" mustn't rely these assert in production code.
-    "B101",
-    # We need `subprocess` module.
-    "B404",
-    # As long as we don't use `shell=True` when spawning a subprocess, this
-    # should be fine.
-    "B603",
-]
 
-[tool.ruff]
-line-length = 79
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+scikit-image = "^0.24.0"
+
