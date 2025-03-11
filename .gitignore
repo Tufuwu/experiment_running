@@ -1,12 +1,10 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
 
 # C extensions
 *.so
-
-# IntelliJ folders - Pycharm
-.idea
 
 # Distribution / packaging
 .Python
@@ -16,11 +14,13 @@ develop-eggs/
 dist/
 downloads/
 eggs/
-/lib/
+.eggs/
+lib/
 lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -39,12 +39,12 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 .coverage
-# When running coverage testing
-# it creates .coverage-username.123x* files
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
+*.cover
+.hypothesis/
 
 # Translations
 *.mo
@@ -52,9 +52,14 @@ coverage.xml
 
 # Django stuff:
 *.log
+local_settings.py
 
-# celery
-tests/celerybeat*
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -62,15 +67,59 @@ docs/_build/
 # PyBuilder
 target/
 
-# editors
-*.komodoproject
-.vscode
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# other
-*.DS_Store*
-*~
-._*
-local_settings.py
-*.db
-*.tar.gz
-Pipfile
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# dotenv
+.env
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# Mac
+.DS_Store
+
+# Forcebalance specific ignore
+doc/html
+doc/latex
+
+test.log
+temp
+backups
+result
+zero_grad.txt
+
+dist/
+forcebalance.egg-info/
+
+.vscode/
+**/.DS_Store
+
+studies/*/targets/
+studies/*/*.tmp/
+studies/*/*.bak/
+sutdies/*/*.err
