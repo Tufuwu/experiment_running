@@ -1,58 +1,90 @@
-from setuptools import setup
-import os.path
-import codecs
+#!/usr/bin/env python
 
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    raise RuntimeError('setuptools is required')
 
-def read(rel_path):
-    here = os.path.abspath(os.path.dirname(__file__))
-    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
-        return fp.read()
+DESCRIPTION = ('PVAnalytics is a python library for the analysis of ' +
+               'photovoltaic system-level data.')
 
+LONG_DESCRIPTION = """
+PVAnalytics is a collection of functions for working with data
+from photovoltaic power systems. The library includes functions for
+general data quality tests such as outlier detection, validation that
+data is physically plausible, filtering data for specific conditions,
+and labeling specific features in the data.
 
-def get_version(rel_path):
-    for line in read(rel_path).splitlines():
-        if line.startswith('__version__'):
-            delim = '"' if '"' in line else "'"
-            return line.split(delim)[1]
-    else:
-        raise RuntimeError("Unable to find version string.")
+Documentation: https://pvanalytics.readthedocs.io
 
+Source code: https://github.com/pvlib/pvanalytics
+"""
 
-requirements_filename = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'requirements.txt')
+DISTNAME = 'pvanalytics'
+AUTHOR = 'pvanalytics Contributors'
+MAINTAINER_EMAIL = 'pvlib-admin@googlegroups.com'
+LICENSE = 'MIT'
+URL = 'https://github.com/pvlib/pvanalytics'
 
-with open(requirements_filename) as fd:
-    install_requires = [i.strip() for i in fd.readlines()]
+TESTS_REQUIRE = [
+    'pytest',
+    'pytest-cov',
+    'packaging',
+]
 
-requirements_dev_filename = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'tests/requirements.txt')
+INSTALL_REQUIRES = [
+    'numpy >= 1.17.0',
+    'pandas >= 1.0.0, != 1.1.*',
+    'pvlib >= 0.9.4',
+    'scipy >= 1.6.0',
+    'statsmodels >= 0.10.0',
+    'scikit-image >= 0.16.0',
+    'importlib-metadata; python_version < "3.8"',
+]
 
-with open(requirements_dev_filename) as fd:
-    tests_require = [i.strip() for i in fd.readlines()]
+DOCS_REQUIRE = [
+    'sphinx == 4.5.0',
+    'pydata-sphinx-theme == 0.8.1',
+    'sphinx-gallery',
+    'matplotlib',
+    'pyarrow'
+]
 
-long_description_filename = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'README.md')
+EXTRAS_REQUIRE = {
+    'optional': ['ruptures'],
+    'test': TESTS_REQUIRE,
+    'doc': DOCS_REQUIRE
+}
 
-with open(long_description_filename) as fd:
-    long_description = fd.read()
+EXTRAS_REQUIRE['all'] = sorted(set(sum(EXTRAS_REQUIRE.values(), [])))
+
+SETUP_REQUIRES = ['setuptools_scm']
+
+CLASSIFIERS = [
+    'Development Status :: 4 - Beta',
+    'Operating System :: OS Independent',
+    'Intended Audience :: Science/Research',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering'
+]
+
+PACKAGES = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
 
 setup(
-    name='duo_universal',
-    version=get_version("duo_universal/version.py"),
-    packages=['duo_universal'],
-    package_data={'duo_universal': ['ca_certs.pem']},
-    url='https://github.com/duosecurity/duo_universal_python',
-    license='BSD',
-    author='Duo Security, Inc.',
-    author_email='support@duosecurity.com',
-    description='Duo Web SDK for two-factor authentication',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    python_requires='>=3',
-    classifiers=[
-        'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: BSD License'
-    ],
-    install_requires=install_requires,
-    tests_require=tests_require
+    name=DISTNAME,
+    use_scm_version=True,
+    packages=PACKAGES,
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
+    tests_require=TESTS_REQUIRE,
+    setup_requires=SETUP_REQUIRES,
+    ext_modules=[],
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    author=AUTHOR,
+    maintainer_email=MAINTAINER_EMAIL,
+    license=LICENSE,
+    classifiers=CLASSIFIERS,
+    url=URL,
+    include_package_data=True,
 )

@@ -1,76 +1,58 @@
-# Duo Universal Python SDK
-
-[![Build Status](https://github.com/duosecurity/duo_universal_python/workflows/Python%20CI/badge.svg)](https://github.com/duosecurity/duo_universal_python/actions)
-[![Issues](https://img.shields.io/github/issues/duosecurity/duo_universal_python)](https://github.com/duosecurity/duo_universal_python/issues)
-[![Forks](https://img.shields.io/github/forks/duosecurity/duo_universal_python)](https://github.com/duosecurity/duo_universal_python/network/members)
-[![Stars](https://img.shields.io/github/stars/duosecurity/duo_universal_python)](https://github.com/duosecurity/duo_universal_python/stargazers)
-[![License](https://img.shields.io/badge/License-View%20License-orange)](https://github.com/duosecurity/duo_universal_python/blob/master/LICENSE)
+![lint and test](https://github.com/pvlib/pvanalytics/workflows/lint%20and%20test/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/pvlib/pvanalytics/badge.svg?branch=main)](https://coveralls.io/github/pvlib/pvanalytics?branch=main)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6110569.svg)](https://doi.org/10.5281/zenodo.6110569)
 
 
-This SDK allows a web developer to quickly add Duo's interactive, self-service, two-factor authentication to any Python3 web login form. Only Python 3 is supported.
+# PVAnalytics
 
-## Tested Against Python Versions:
-- 3.7
-- 3.8
-- 3.9
-- 3.10
-- 3.11
+PVAnalytics is a python library that supports analytics for PV
+systems. It provides functions for quality control, filtering, and
+feature labeling and other tools supporting the analysis of PV
+system-level data.
 
-## TLS 1.2 and 1.3 Support
+PVAnalytics is available at [PyPI](https://pypi.org/project/pvanalytics/)
+and can be installed using `pip`:
 
-Duo_universal_python uses Python's ssl module and OpenSSL for TLS operations. Python versions 2.7 (and higher) and 3.5 (and higher) have both TLS 1.2 and TLS 1.3 support.
+    pip install pvanalytics
 
-## What's here:
-* `duo_universal` - The Python Duo SDK for interacting with the Duo Universal Prompt
-* `demo` - An example web application with Duo integrated
-* `tests` - Test cases
+Documentation and example usage is available at 
+[pvanalytics.readthedocs.io](https://pvanalytics.readthedocs.io).
 
-## Getting Started
-To use the SDK in your existing development environment, install it from pypi (https://pypi.org/project/duo_universal).
-```
-pip3 install duo_universal
-```
-Once it's installed, see our developer documentation at https://duo.com/docs/duoweb and `demo/app.py` in this repo for guidance on integrating Duo 2FA into your web application.
+## Library Overview
 
-## Contribute
-To contribute, fork this repo and make a pull request with your changes when they're ready. 
+The functions provided by PVAnalytics are organized in modules based
+on their anticipated use.  The structure/organization below is likely
+to change as use cases are identified and refined and as package
+content evolves.  The functions in `quality` and
+`features` take a series of data and return a series of booleans.
+For more detailed descriptions, see our
+[API Reference](https://pvanalytics.readthedocs.io/en/stable/api.html).
 
-If you're not already working from a dedicated development environment, it's recommended a virtual environment is used. Assuming a virtual environment named `env`, create and activate the environment:
-```
-python3 -m venv env
-source env/bin/activate
-```
+* `quality` contains submodules for different kinds of data quality
+  checks.
+  * `data_shifts` contains quality checks for detecting and 
+    isolating data shifts in PV time series data.
+  * `irradiance` provides quality checks for irradiance
+    measurements. 
+  * `weather` has quality checks for weather data (for example tests
+    for physically plausible values of temperature, wind speed,
+    humidity, etc.)
+  * `outliers` contains different functions for identifying outliers
+    in the data.
+  * `gaps` contains functions for identifying gaps in the data
+    (i.e. missing values, stuck values, and interpolation).
+  * `time` quality checks related to time (e.g. timestamp spacing)
+  * `util` general purpose quality functions.
 
-Build and install the SDK from source:
-```
-pip3 install -r requirements.txt
-pip3 install .
-```
-
-## Tests
-Install the test requirements:
-```
-cd tests
-pip3 install -r requirements.txt
-```
-Then run tests from the `test` directory:
-```
-# Run an individual test file
-python3 <test_name>.py
-
-# Run all tests with unittest
-python3 -m unittest
-```
-
-## Lint
-```
-flake8
-```
-
-## Support
-
-Please report any bugs, feature requests, or issues to us directly at support@duosecurity.com.
-
-Thank you for using Duo!
-
-https://duo.com/
+* `features` contains submodules with different methods for
+  identifying and labeling salient features.
+  * `clipping` functions for labeling inverter clipping.
+  * `clearsky` functions for identifying periods of clear sky
+    conditions.
+  * `daytime` functions for for identifying periods of day and night.
+  * `orientation` functions for labeling data as corresponding to
+    a rotating solar tracker or a fixed tilt structure.
+  * `shading` functions for identifying shadows.
+* `system` identification of PV system characteristics from data
+  (e.g. nameplate power, orientation, azimuth)
+* `metrics` contains functions for computing PV system-level metrics

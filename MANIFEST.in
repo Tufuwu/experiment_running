@@ -1,4 +1,6 @@
-include requirements.txt
-include spdx.json
-graft tests
+prune .github
+exclude .gitignore
+exclude .readthedocs.yml
+exclude .travis.yml
 
+graft pvanalytics/data

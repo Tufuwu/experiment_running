@@ -1,0 +1,30 @@
+.. _whatsnew_023:
+
+0.2.3 (not yet released)
+------------------------
+
+
+Enhancements
+~~~~~~~~~~~~
+
+
+Bug Fixes
+~~~~~~~~~
+
+
+Requirements
+~~~~~~~~~~~~
+
+
+Documentation
+~~~~~~~~~~~~~
+
+
+Testing
+~~~~~~~
+* Add testing for python 3.13 (:pull:`215`).
+
+
+Contributors
+~~~~~~~~~~~~
+
