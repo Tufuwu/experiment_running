@@ -1,24 +1,16 @@
-from pathlib import Path
-
-from _pytest.doctest import DoctestModule
-
-collect_ignore = [
-    'babel/messages/setuptools_frontend.py',
-    'setup.py',
-    'tests/messages/data',
-]
-babel_path = Path(__file__).parent / 'babel'
+"""
+Define command line options for running tests
+"""
 
 
-# Via the stdlib implementation of Path.is_relative_to in Python 3.9
-def _is_relative(p1: Path, p2: Path) -> bool:
-    try:
-        p1.relative_to(p2)
-        return True
-    except ValueError:
-        return False
-
-
-def pytest_collect_file(file_path: Path, parent):
-    if _is_relative(file_path, babel_path) and file_path.suffix == '.py':
-        return DoctestModule.from_parent(parent, path=file_path)
+def pytest_addoption(parser):
+    parser.addoption('--ascii-dbase-root', action='store', default=None)
+    parser.addoption('--ascii-dbase-url', action='store', default=None)
+    parser.addoption('--hdf5-dbase-root', action='store', default=None)
+    parser.addoption('--disable-file-hash', action='store_true', default=False,
+                     help='Disable MD5 hash checks on test files')
+    parser.addoption('--idl-executable', action='store', default=None)
+    parser.addoption('--idl-codebase-root', action='store', default=None)
+    parser.addoption('--include-all-files', action='store_true', default=False)
+    parser.addoption('--skip-version-check', action='store_true', default=False,
+                     help='Do not check CHIANTI version')

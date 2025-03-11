@@ -1,24 +1,39 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.1
+    rev: "v0.4.4"
     hooks:
       - id: ruff
-        args:
-          - --fix
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+        args: ["--fix"]
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
     hooks:
-      - id: check-added-large-files
-      - id: check-docstring-first
-        exclude: (docs/conf.py)
-      - id: check-json
+    - id: isort
+      name: isort
+      entry: isort
+      require_serial: true
+      language: python
+      types:
+      - python
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-ast
+      - id: check-case-conflict
+      - id: trailing-whitespace
+        exclude: ".*(.fits|.fts|.fit|.txt|.pro|.asdf|.json)$"
       - id: check-yaml
       - id: debug-statements
-        exclude: (tests/messages/data/)
+      - id: check-added-large-files
       - id: end-of-file-fixer
-        exclude: (tests/messages/data/)
-      - id: name-tests-test
-        args: [ '--django' ]
-        exclude: (tests/messages/data/|.*(consts|utils).py)
-      - id: requirements-txt-fixer
-      - id: trailing-whitespace
+        exclude: ".*(.fits|.fts|.fit|.txt|.pro|.asdf|.json|.bib|tca.*)$"
+      - id: mixed-line-ending
+        exclude: ".*(.fits|.fts|.fit|.txt|.bib|.pro|.asdf|.json|tca.*)$"
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        additional_dependencies:
+        - tomli

@@ -1,6 +1,0 @@
-[report]
-exclude_lines =
-    NotImplemented
-    pragma: no cover
-    warnings.warn
-    if TYPE_CHECKING:

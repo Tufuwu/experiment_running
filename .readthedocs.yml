@@ -1,26 +1,30 @@
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
-
 version: 2
 
 build:
-  os: ubuntu-22.04
+  os: ubuntu-lts-latest
   tools:
-    python: "3.11"
+    python: "mambaforge-latest"
   jobs:
-    pre_build:
-      # Replace any Babel version something may have pulled in
-      # with the copy we're working on.  We'll also need to build
-      # the data files at that point, or date formatting _within_
-      # Sphinx will fail.
-      - pip install -e .
-      - make import-cldr
+    post_checkout:
+      - git fetch --unshallow || true
+    pre_install:
+      - git update-index --assume-unchanged .rtd-environment.yml docs/conf.py
+
+conda:
+  environment: .rtd-environment.yml
+
 sphinx:
-   configuration: docs/conf.py
+  builder: html
+  configuration: docs/conf.py
+  fail_on_warning: false
 
 formats:
-  - epub
-  - pdf
+  - htmlzip
 
 python:
-   install:
-   - requirements: docs/requirements.txt
+  install:
+    - method: pip
+      extra_requirements:
+        - all
+        - docs
+      path: .
