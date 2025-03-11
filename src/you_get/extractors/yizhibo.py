@@ -4,6 +4,7 @@ __all__ = ['yizhibo_download']
 
 from ..common import *
 import json
+import time
 
 def yizhibo_download(url, output_dir = '.', merge = True, info_only = False, **kwargs):
     video_id = url[url.rfind('/')+1:].split(".")[0]

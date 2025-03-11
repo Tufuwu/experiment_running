@@ -82,21 +82,8 @@ class YouTube(VideoExtractor):
             #   Xka - https://www.youtube.com/s/player/dc0c6770/player_ias.vflset/sv_SE/base.js
             #   jma - https://www.youtube.com/s/player/8d9f6215/player_ias.vflset/sv_SE/base.js
             f1 = match1(js, r',[$\w]+\.length\|\|([$\w]+)\(""\)\)}};')
-
-            # Examples:
-            #   Yla, ida - https://www.youtube.com/s/player/fb725ac8/player-plasma-ias-phone-sv_SE.vflset/base.js
-            #   Hla, eda - https://www.youtube.com/s/player/2f238d39/player-plasma-ias-phone-en_US.vflset/base.js
-            #   WyE, bE7, Gsn - https://www.youtube.com/s/player/3bb1f723/player-plasma-ias-phone-sv_SE.vflset/base.js
-            if not f1:
-                f0 = match1(js, r'\w=([$\w]+)\[0\]\(\w\),\w\.set\(\w,\w\)')
-                f1 = match1(js, r'%s=\[([$\w]+)\]' % f0)
-
             f1def = match1(js, r'\W%s=(function\(\w+\).+?\)});' % re.escape(f1))
-            v1 = match1(f1def, r'if\(typeof ([$\w]+)==="undefined"\)')
-            v1def = match1(js, r'(var %s=[^;]+;)' % v1)
-            if not v1def:
-                v1def = ''
-            n = dukpy.evaljs('%s(%s)("%s")' % (v1def, f1def, n))
+            n = dukpy.evaljs('(%s)("%s")' % (f1def, n))
             return n
 
         u = urlparse(url)
@@ -193,20 +180,13 @@ class YouTube(VideoExtractor):
 
         playerResponseStatus = ytInitialPlayerResponse["playabilityStatus"]["status"]
         if playerResponseStatus != STATUS_OK:
-            try:
-                reason = ytInitialPlayerResponse["playabilityStatus"]['errorScreen']\
-                    ['playerErrorMessageRenderer']['reason']['runs'][0]['text']
-                reason += ' ' + ytInitialPlayerResponse["playabilityStatus"]['errorScreen']\
-                    ['playerErrorMessageRenderer']['subreason']['runs'][0]['text']
-            except:
-                reason = ytInitialPlayerResponse["playabilityStatus"].get("reason", "")
-            if reason:
-                log.wtf(f'Server refused to provide video details. Returned status: {playerResponseStatus}. Reason: {reason}')
-            else:
-                log.wtf(f'Server refused to provide video details. Returned status: {playerResponseStatus}.')
+            reason = ytInitialPlayerResponse["playabilityStatus"].get("reason", "")
+            raise AssertionError(
+                f"Server refused to provide video details. Returned status: {playerResponseStatus}, reason: {reason}."
+            )
 
     def prepare(self, **kwargs):
-        self.ua = 'Mozilla/5.0 (iPad; CPU OS 16_7_10 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1,gzip(gfe)'
+        self.ua = 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.103 Mobile Safari/537.36'
 
         assert self.url or self.vid
 
@@ -286,8 +266,6 @@ class YouTube(VideoExtractor):
             for ct in caption_tracks:
                 ttsurl, lang = ct['baseUrl'], ct['languageCode']
 
-                if ttsurl.startswith('/'):
-                    ttsurl = 'https://www.youtube.com' + ttsurl
                 tts_xml = parseString(get_content(ttsurl))
                 transcript = tts_xml.getElementsByTagName('transcript')[0]
                 texts = transcript.getElementsByTagName('text')

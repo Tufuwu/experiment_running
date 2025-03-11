@@ -5,6 +5,9 @@ __all__ = ['sohu_download']
 from ..common import *
 
 import json
+import time
+from random import random
+from urllib.parse import urlparse
 
 '''
 Changelog:
