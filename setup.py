@@ -1,26 +1,23 @@
-#!/usr/bin/env python
+from setuptools import setup, find_packages
 
-"""Package setup for Cython extensions only"""
-
-from Cython.Build import build_ext
-from setuptools import setup, Extension
-import numpy as np
-
-ext_modules = [
-    Extension(
-        "jcvi.assembly.chic",
-        ["src/jcvi/assembly/chic.pyx"],
-        include_dirs=[np.get_include()],
-        extra_compile_args=["-O3"],
-    ),
-    Extension(
-        "jcvi.formats.cblast",
-        ["src/jcvi/formats/cblast.pyx"],
-        extra_compile_args=["-O3"],
-    ),
+REQUIRES = [
+    'Flask>=1.1.1',
+    'Flask-SocketIO>=4.2.1',
+    'Flask-Login>=0.4.1',
+    'requests>=2.22.0',
+    'pytz>=2019.2',
+    'paho-mqtt>=1.4.0',
+    'RPi.GPIO>=0.7.0',
 ]
 
+
 setup(
-    ext_modules=ext_modules,
-    cmdclass={"build_ext": build_ext},
+    name='AlarmPI',
+    version='4.9',
+    description='Home Security System',
+    author='bkbilly',
+    author_email='bkbilly@hotmail.com',
+    packages=find_packages(),
+    install_requires=REQUIRES,
+    # long_description=open('README.md').read()
 )

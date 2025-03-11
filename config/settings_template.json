@@ -1,0 +1,52 @@
+{
+    "http": {
+        "enable": false,
+        "host": "",
+        "https": true,
+        "password": "",
+        "port": 443,
+        "username": "test1"
+    },
+    "mail": {
+        "enable": false,
+        "messageBody": "Alert",
+        "messageSubject": "Home Security",
+        "password": "",
+        "recipients": [],
+        "smtpPort": 587,
+        "smtpServer": "smtp.gmail.com",
+        "username": ""
+    },
+    "mqtt": {
+        "authentication": false,
+        "command_topic": "home/alarm2/set",
+        "enable": false,
+        "host": "",
+        "password": "",
+        "port": 1883,
+        "state_topic": "home/alarm2",
+        "username": "",
+        "homeassistant": false
+    },
+    "sensors": {
+    },
+    "serene": {
+        "enable": false,
+        "http_start": "",
+        "http_stop": "",
+        "pin": 14
+    },
+    "settings": {
+        "alarmState": "disarmed",
+        "timezone": "Europe/Athens",
+        "trim": 1000
+    },
+    "voip": {
+        "domain": "",
+        "enable": false,
+        "numbersToCall": [],
+        "password": "",
+        "timesOfRepeat": "",
+        "username": ""
+    }
+}
