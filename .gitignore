@@ -1,46 +1,92 @@
-# Python bytecode:
-*.py[co]
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Packaging files:
-*.egg*
+# C extensions
+*.so
 
-# Sphinx docs:
-build
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# SQLite3 database files:
-*.db
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
 
-# Logs:
-*.log
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Eclipse
-.project
-.pydevproject
-.settings
-
-# Linux Editors
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-.elc
-auto-save-list
-tramp
-.\#*
-*.swp
-*.swo
-*.nja
-
-# Mac
-.DS_Store
-._*
-
-# Windows
-Thumbs.db
-Desktop.ini
-
-#tests
+# Unit test / coverage reports
+htmlcov/
+.tox/
 .coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 
-#js
-node_modules/
+# Sphinx documentation
+docs/*build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# dotenv
+.env
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# PyCharm
+.idea/
+
+# Backup files
+*~
+
+# Usual temporary folders
+tmp/
+kk/
+
+# Project specific files
+laia/version.py
+
+# data
+datasets/
+test-resources/
+
+# benchmarks
+benchmarks/basic
+benchmarks/distributed
+benchmarks/half
