@@ -1,19 +1,38 @@
-name: Python Code Check
+name: workflow
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+  group: test-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
 
 jobs:
-  flake8-lint:
+  run:
+    name: Python ${{ matrix.python-version }} on Linux
     runs-on: ubuntu-latest
-    name: flake8 Linter
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+
     steps:
-      - name: Check out source repository
-        uses: actions/checkout@v3
-      - name: Set up Python environment
-        uses: actions/setup-python@v3
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
-        with:
-          max-line-length: "150"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+
+      - name: Run tests
+        run: hatch run cov

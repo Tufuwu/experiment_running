@@ -1,5 +1,4 @@
-.settings/
-*.pyo
-*.pyc
-.project
-.pydevproject
+dist
+.coverage
+.mypy_cache
+.ruff_cache

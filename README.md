@@ -1,78 +1,158 @@
-# Library Updater
-![Kodi Version](https://img.shields.io/endpoint?url=https%3A%2F%2Fweberjr.com%2Fkodi-shield%2Fversion%2Frobweber%2Fxbmclibraryautoupdate%2Fmatrix%2Ftrue%2Ftrue) ![Total Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fweberjr.com%2Fkodi-shield%2Fdownloads%2Fmatrix%2Fservice.libraryautoupdate%2F1.2.4) [![Build Status](https://img.shields.io/github/actions/workflow/status/robweber/xbmclibraryautoupdate/addon-checker.yml)](https://github.com/robweber/xbmclibraryautoupdate/actions/workflows/addon-checker.yml) [![License](https://img.shields.io/github/license/robweber/xbmclibraryautoupdate)](https://github.com/robweber/xbmclibraryautoupdate/blob/master/LICENSE.txt) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
+# Jaro Winkler Distance
 
-The Library Updater will update your music and/or video libraries according to times specified by you. Please note that this is just a fancy timer that calls out to the normal Kodi Library Scanning functions. All of the processes associated with scanning are all handed off to Kodi.
+<div align="center">
 
-_Thanks to pkscuot for several small tweaks to this addon!_
+![PyPI - Version](https://img.shields.io/pypi/v/pyjarowinkler?style=flat-square)
+![License](https://img.shields.io/github/license/nap/jaro-winkler-distance?style=flat-square)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyjarowinkler?style=flat-square)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nap/jaro-winkler-distance/push.yml?branch=main&style=flat-square)
 
-## Settings
+</div>
 
-Be aware that settings are visible based on the [Kodi Settings Level](https://kodi.wiki/view/Settings) set. Levels higher than Standard (Advanced or Expert) are designated next to that setting.
+This module finds a non-euclidean distance or similarity between two strings.
 
-### General Settings:
+Jaro and [Jaro-Winkler](https://www.census.gov/content/dam/Census/library/working-papers/1991/adrm/rr91-9.pdf) equations provides a score between two short strings where errors are more prone at the end of the string. Jaro's equation measure is the weighted sum of the percentage of matching and transposed characters from each string. Winkler's factor adds weight in Jaro's formula to increase the calculated measure when there is a sequence of characters (a prefix) in both strings.
 
-* Startup Delay - if an update should run on startup (dependent on the time the last update has ran) this will delay it from running for a few minutes to allow other XBMC process to function.
-* Show Notifications - shows notifications when the updater will run again
-* Run During Playback - should the addon run a scheduled scan when you are playing media (yes/no)
-* Only run when idle - restricts the scanning process to when the screensaver is active
-* Check if sources exist before scan - checks if the sources are online before starting the scan process. For single source scans it will check only that source. ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
-* Disable Manual Run Prompt - disables the dialog box when selecting Manual Run and just goes right to the library update ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
+This version is based on the [original C implementation of strcmp95](https://web.archive.org/web/20100227020019/http://www.census.gov/geo/msb/stand/strcmp.c) implementation but does not attempt to normalize characters that are similar to the eyes (e.g.: `O` vs `0`).
 
-### Video Settings:
+ * Impact of the prefix is limited to 4 characters, as originally defined by Winkler.
+ * Input strings are not modified beyond whitespace trimming.
+ * In-word whitespace and characters case will **optionally** impact score.
+ * Returns a floating point number rounded to the desired decimals (defaults to `2`) using Python's [`round`](https://docs.python.org/3/library/functions.html#round).
+ * Consider usual [floating point arithmetic](https://docs.python.org/3/tutorial/floatingpoint.html#tut-fp-issues) characteristics when working with this module.
 
-Enabling this will turn on scanning for the Video Library. This is the same as calling "Update Library" from within the Video menus of Kodi. There are a few options you can tweak regarding how often you want the scanner to run. Read the section on Timer Options for more information.
+## Implementation
 
-__Custom Paths__ ![Settings Level Expert](https://img.shields.io/badge/-expert-blue)
+The complexity of this algoritme resides in finding the `matching` and `transposed` characters. That is because of the interpretation of what are the `matching` conditions and the definition of `transposed`. Definitions of those two will make the score vary between implementations of this algorithme.
 
-Custom paths are a special advanced feature for the Video library. It allows you to specify different schedules for individual paths in your library. This editor is limited to the Cron style syntax for scheduling. The path you select must already be in the video database and have content selected. The path must also match your source path exactly.
+Here is how `matching` and `transposed` are defined in this module:
 
-### Music Settings
+* A character of the first string at position `N` is `matching` if found at position `N` or within `distance` on either side in the second string.
+* The `distance` is calculated using the rounded down length of the longest string divided by two minus one.
+* Characters in the first string are matched only once against characters of the second string.
+* Two characters are `transposed` if they previously matched and aren't at the same position in the matching character subset.
+* Decimals are rounded according to the scientific method.
 
-Enabled this will turn on scanning for the Music Library. This is the same as calling "Update Library" from within the Music menus of Kodi. The options here are identical to the Video Settings above. Read the section on Timer Options for more information.
+**TODO**: Implementation should be refactored to use Python's [Decimal](https://docs.python.org/3.13/library/decimal.html) module from the standard library. This module was introduced in Python 3.9.
 
-### Timer Options:
+### Example
 
-For both Video and Music library scanning there are two types of timers to choose from.
+Calculate the Jaro Winkler similarity ($sim_{w}$) between `PENNSYLVANIA` and `PENNCISYLVNIA`:
 
-__Standard Timer__
-
-Specify an interval to run the library update process. It will be launched every X hours within the interval unless on of the conditions specified by you as been met (don't run during media playback, etc) in which case it will be run at the next earliest convenience.
-
-__Advanced Timer__ ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
-
-Specify a cron expression to use as an interval for the update process. By default the expression will run at the top of every hour. More advanced expressions can be configured such as:
+$$
+s_{1}=\text{PENNSYLVANIA} \qquad\text{and}\qquad s_{2}=\text{PENNCISYLVNIA}
+$$
 
 ```
-
-    .--------------- minute (0 - 59)
-    |   .------------ hour (0 - 23)
-    |   |   .--------- day of month (1 - 31)
-    |   |   |   .------ month (1 - 12) or Jan, Feb ... Dec
-    |   |   |   |  .---- day of week (0 - 6) or Sun(0 or 7)
-    V   V   V   V  V
-    *   *   *   *  *
+    P E N N C I S Y L V N I A
+  ┌-─────────────────────────
+P │ 1          ╎
+E │   1          ╎
+N │     1          ╎
+N │       1          ╎           Symbols '╎' represent the sliding windows
+S │             1      ╎        boundary in the second string where we look
+Y │ ╎             1      ╎           for the first string's character.
+L │   ╎             1      ╎
+V │     ╎             1                   d = 5 in this example.
+A │       ╎                 1
+N │         ╎           1
+I │           ╎           1
+A │             ╎
 ```
 
-Example:
-1. 0 */5 ** 1-5 - runs update every five hours Monday - Friday
-2. 0,15,30,45 0,15-18 * * * - runs update every quarter hour during midnight hour and 3pm-6pm
+$$
+\begin{split}
+   d &= \left\lfloor {\max(12, 13) \over 2} \right\rfloor - 1 \newline
+     &= 5 \newline
+\end{split}
+\qquad
+   \text{ and }
+\qquad
+\begin{split}
+   |s_{1}| &= 12 \newline
+   |s_{2}| &= 13 \newline
+\end{split}
+\qquad
+   \text{ and }
+\qquad
+\begin{split}
+   \ell &= 4 \newline
+      m &= 11 \newline
+      t &= 3 \newline
+      p &= 0.1 \newline
+\end{split}
+$$
 
+Considering the input parameters calculated above:
 
-Read up on cron (http://en.wikipedia.org/wiki/Cron) for more information on how to create these expressions
+$$
+\begin{split}
+   sim_{j} &=\begin{cases}
+               0 & \text{if } m = 0 \newline
+               {1 \over 3} \times \left({m \over |s_{1}|} + {m \over |s_{2}|} + {{m - t} \over m} \right) & \text{otherwise}
+             \end{cases} \newline
+           &={1 \over 3} \times \left({11 \over 12} + {11 \over 13} + {{11 - 3} \over 11}\right) \newline
+           &= 0.83003108003 \newline
+\end{split}
+\qquad
+   \text{then}
+\qquad
+\begin{split}
+   sim_{w} &= sim_{j} + \ell \times p \times (1 - sim_{j}) \newline
+           &= 0.83003108003 + 4 \times 0.1 \times (1 - 0.83003108003) \newline
+           &= 0.89801864801 \newline
+\end{split}
+$$
 
-### Cleaning the Library:
+We found that the $\lceil sim_{w} \rceil$ is $0.9$.
 
-Cleaning the Music/Video Libraries is not enabled by default. If you choose to do this you can select from a few options to try and reduce the likelyhood that a DB clean wile hose your database.
+## Usage
 
-* Library to Clean - You can clean your video library, music library, or both.
-* Prompt User Before Cleaning - you must confirm that you want to clean the library before it will happen. Really only useful for "After Update" as a condition. ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
-* Frequency - There are several frequency options.
-  * "After Update" will run a clean immediately following a scan on the selected library.
-  * The Day/Week/Month options will schedule a clean task to happen. Cleaning the Video Library is hardcoded for midnight and the music library at 2am. Weekly updates occur on Sunday and Monthly updates occur on the first of each month - these values are hardcoded.
-  * You can also choose to enter a custom cron timer for video and music library cleaning. These work the same as any of the other cron timers for the other schedules.
+```python
+from pyjarowinkler import distance
 
-## Contributing
+distance.get_jaro_similarity("PENNSYLVANIA", "PENNCISYLVNIA", decimals=12)
+# 0.830031080031
+distance.get_jaro_winkler_similarity("PENNSYLVANIA", "PENNCISYLVNIA", decimals=12)
+# 0.898018648019
+distance.get_jaro_distance("hello", "haloa", decimals=4)
+# 0.2667
+distance.get_jaro_similarity("hello", "haloa", decimals=2)
+# 0.73
+distance.get_jaro_winkler_distance("hello", "Haloa", scaling=0.1, ignore_case=False)
+# 0.4
+distance.get_jaro_winkler_distance("hello", "HaLoA", scaling=0.1, ignore_case=True)
+# 0.24
+distance.get_jaro_winkler_similarity("hello", "haloa", decimals=2)
+# 0.76
+```
 
-If you're having issues with this addon there are two main places to look. The first is the addon thread on [the Kodi Forums](https://forum.kodi.tv/showthread.php?tid=119520). This is where you can ask general questions regarding functionality. If you're having a legitimate issue, such as an error message, you can [create an Issue](https://github.com/robweber/xbmclibraryautoupdate/issues) for it in this repository.
+## Contribute
 
-Pull Requests are welcome if you want to dig around in the code to fix issues or add functionality. Please submit them using [the usual workflow](https://guides.github.com/introduction/flow/index.html). Additionally you can help keep languages files up to date by visiting [the Weblate page](https://kodi.weblate.cloud/projects/kodi-add-ons-services/service-xbmclibraryautoupdate/) for this addon and updating untranslated strings. Changes to Weblate will automatically create PRs to this repository. This is a great way to contribute if you're not a coder!
+You need to have installed [`asdf`](https://asdf-vm.com/) on your system. Then, running the commands below will setup your environment with the project's optional (dev) requirements and create the python virtual environment necessary to run test, lint, and build steps.
+
+Typical order of execution is as follow:
+
+```shell
+$ cd ./jaro-winkler-distance
+$ asdf install
+$ pip install '.[dev]'
+$ hatch python install 3.13 3.12 3.11 3.10 3.9
+$ hatch env create
+```
+
+Other helpful commands:
+
+* `hatch test`
+* `hatch fmt`
+* `hatch env show`
+* `hatch run test:unit`
+* `hatch run test:all`
+* `hatch run lint:all`
+
+## Release
+
+```shell
+$ ./release.sh help
+Usage: release.sh [help|major|minor|patch]
+```
