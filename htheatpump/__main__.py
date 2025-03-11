@@ -16,3 +16,17 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+
+from .__version__ import __version__
+
+
+# Main program
+def main() -> None:
+    print("[htheatpump=={}]: Easy-to-use Python communication module for Heliotherm heat pumps.".format(__version__))
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,39 +1,27 @@
-===================================
-Python-Markups module documentation
-===================================
+Welcome to HtHeatpump's documentation!
+======================================
 
-Introduction to Python-Markups
-==============================
+Documentation built using Sphinx |today| for HtHeatpump version |version|.
 
-Python-Markups is a module that provides unified interface for using
-various markup languages, such as Markdown, reStructuredText, Textile and
-AsciiDoc. It is also possible for clients to create and register their
-own markup languages.
-
-The output language Python-Markups works with is HTML. Stylesheets and
-JavaScript sections are supported.
-
-The abstract interface that any markup implements is
-:class:`~markups.abstract.AbstractMarkup`.
-
-Contents
-========
+Contents:
 
 .. toctree::
+   :maxdepth: 2
 
-   overview
-   interface
-   standard_markups
-   custom_markups
-   changelog
+   readme
+   installation
+   usage
+   htpackage
+   htscripts
+   htparams
+   contributing
+   authors
+   history
 
-Links
-=====
 
-* Python-Markups source code is hosted on GitHub_.
-* You can get the source tarball from PyPI_.
-* It is also packaged in Debian_.
+Indices and tables
+==================
 
-.. _GitHub: https://github.com/retext-project/pymarkups
-.. _PyPI: https://pypi.org/project/Markups/
-.. _Debian: https://packages.debian.org/sid/source/pymarkups
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
