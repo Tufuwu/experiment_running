@@ -1,9 +1,19 @@
+# Python specific
 *.pyc
-*.log
-play.wav
-server.json
-.tox
-AlarmPI.egg-info
-settings*.json
-!*_template.json
-venv
+
+# Test files
+*cache*
+*coverage*
+
+# Building files
+build*
+dist*
+sportsipy.egg-info*
+
+# VirtualEnv
+bin/*
+include/*
+lib/*
+man/*
+pip-selfcheck.json
+env/*

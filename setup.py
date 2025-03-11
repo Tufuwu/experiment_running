@@ -1,23 +1,33 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-REQUIRES = [
-    'Flask>=1.1.1',
-    'Flask-SocketIO>=4.2.1',
-    'Flask-Login>=0.4.1',
-    'requests>=2.22.0',
-    'pytz>=2019.2',
-    'paho-mqtt>=1.4.0',
-    'RPi.GPIO>=0.7.0',
-]
+with open('README.rst', 'r') as f:
+    long_description = f.read()
 
+with open('VERSION', 'r') as f:
+    version = f.read()
 
 setup(
-    name='AlarmPI',
-    version='4.9',
-    description='Home Security System',
-    author='bkbilly',
-    author_email='bkbilly@hotmail.com',
+    name='sportsipy',
+    version=version,
+    author='Robert Clark',
+    author_email='robdclark@outlook.com',
+    description='A free sports API written for python',
+    long_description=long_description,
+    license='MIT',
+    url='https://github.com/roclark/sportsipy',
     packages=find_packages(),
-    install_requires=REQUIRES,
-    # long_description=open('README.md').read()
+    python_requires='>=3.7',
+    keywords='stats sports api sportsipy machine learning',
+    install_requires=[
+        "numpy >= 1.19.5",
+        "pandas >= 0.24.1",
+        "pyquery >= 1.4.0",
+        "requests >= 2.18.4"
+    ],
+    classifiers=(
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: POSIX :: Linux',
+    ),
 )
