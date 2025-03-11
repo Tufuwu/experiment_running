@@ -1,5 +1,3 @@
-include Cargo.toml Cargo.lock
-recursive-include src *
-graft LICENSES
-global-exclude .git*
-global-exclude .git/**
+include donkeycar/templates/*
+include scripts
+recursive-include donkeycar/parts/web_controller/templates/ *
