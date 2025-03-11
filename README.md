@@ -1,183 +1,78 @@
-# Flask-FileAlchemy
+# Library Updater
+![Kodi Version](https://img.shields.io/endpoint?url=https%3A%2F%2Fweberjr.com%2Fkodi-shield%2Fversion%2Frobweber%2Fxbmclibraryautoupdate%2Fmatrix%2Ftrue%2Ftrue) ![Total Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fweberjr.com%2Fkodi-shield%2Fdownloads%2Fmatrix%2Fservice.libraryautoupdate%2F1.2.4) [![Build Status](https://img.shields.io/github/actions/workflow/status/robweber/xbmclibraryautoupdate/addon-checker.yml)](https://github.com/robweber/xbmclibraryautoupdate/actions/workflows/addon-checker.yml) [![License](https://img.shields.io/github/license/robweber/xbmclibraryautoupdate)](https://github.com/robweber/xbmclibraryautoupdate/blob/master/LICENSE.txt) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
-![](https://github.com/siddhantgoel/flask-filealchemy/workflows/flask-filealchemy/badge.svg) ![](https://badge.fury.io/py/flask-filealchemy.svg)
+The Library Updater will update your music and/or video libraries according to times specified by you. Please note that this is just a fancy timer that calls out to the normal Kodi Library Scanning functions. All of the processes associated with scanning are all handed off to Kodi.
 
-`Flask-FileAlchemy` is a [Flask] extension that lets you use Markdown or YAML
-formatted plain-text files as the main data store for your apps.
+_Thanks to pkscuot for several small tweaks to this addon!_
 
-## Installation
+## Settings
 
-```bash
-$ pip install flask-filealchemy
+Be aware that settings are visible based on the [Kodi Settings Level](https://kodi.wiki/view/Settings) set. Levels higher than Standard (Advanced or Expert) are designated next to that setting.
+
+### General Settings:
+
+* Startup Delay - if an update should run on startup (dependent on the time the last update has ran) this will delay it from running for a few minutes to allow other XBMC process to function.
+* Show Notifications - shows notifications when the updater will run again
+* Run During Playback - should the addon run a scheduled scan when you are playing media (yes/no)
+* Only run when idle - restricts the scanning process to when the screensaver is active
+* Check if sources exist before scan - checks if the sources are online before starting the scan process. For single source scans it will check only that source. ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
+* Disable Manual Run Prompt - disables the dialog box when selecting Manual Run and just goes right to the library update ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
+
+### Video Settings:
+
+Enabling this will turn on scanning for the Video Library. This is the same as calling "Update Library" from within the Video menus of Kodi. There are a few options you can tweak regarding how often you want the scanner to run. Read the section on Timer Options for more information.
+
+__Custom Paths__ ![Settings Level Expert](https://img.shields.io/badge/-expert-blue)
+
+Custom paths are a special advanced feature for the Video library. It allows you to specify different schedules for individual paths in your library. This editor is limited to the Cron style syntax for scheduling. The path you select must already be in the video database and have content selected. The path must also match your source path exactly.
+
+### Music Settings
+
+Enabled this will turn on scanning for the Music Library. This is the same as calling "Update Library" from within the Music menus of Kodi. The options here are identical to the Video Settings above. Read the section on Timer Options for more information.
+
+### Timer Options:
+
+For both Video and Music library scanning there are two types of timers to choose from.
+
+__Standard Timer__
+
+Specify an interval to run the library update process. It will be launched every X hours within the interval unless on of the conditions specified by you as been met (don't run during media playback, etc) in which case it will be run at the next earliest convenience.
+
+__Advanced Timer__ ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
+
+Specify a cron expression to use as an interval for the update process. By default the expression will run at the top of every hour. More advanced expressions can be configured such as:
+
 ```
 
-## Background
-
-The constraints on which data-store to use for applications that only have to
-run locally are quite relaxed as compared to the ones that have to serve
-production traffic. For such applications, it's normally OK to sacrifice on
-performance for ease of use.
-
-One very strong use case here is generating static sites. While you can use
-[Frozen-Flask] to "freeze" an entire Flask application to a set of HTML files,
-your application still needs to read data from somewhere. This means you'll need
-to set up a data store, which (locally) tends to be file based SQLite. While
-that does the job extremely well, this also means executing SQL statements to
-input data.
-
-Depending on how many data models you have and what types they contain, this can
-quickly get out of hand (imagine having to write an `INSERT` statement for a
-blog post).
-
-In addition, you can't version control your data. Well, technically you can, but
-the diffs won't make any sense to a human.
-
-Flask-FileAlchemy lets you use an alternative data store - plain text files.
-
-Plain text files have the advantage of being much easier to handle for a human.
-Plus, you can version control them so your application data and code are both
-checked in together and share history.
-
-Flask-FileAlchemy lets you enter your data in Markdown or YAML formatted plain
-text files and loads them according to the [SQLAlchemy] models you've defined
-using [Flask-SQLAlchemy] This data is then put into whatever data store you're
-using (in-memory SQLite works best) and is then ready for your app to query
-however it pleases.
-
-This lets you retain the comfort of dynamic sites without compromising on the
-simplicity of static sites.
-
-## Usage
-
-### Define data models
-
-Define your data models using the standard (Flask-)SQLAlchemy API. As an
-example, a `BlogPost` model can defined as follows.
-
-```python
-app = Flask(__name__)
-
-# configure Flask-SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-
-db = SQLAlchemy()
-
-db.init_app(app)
-
-class BlogPost(db.Model):
-   __tablename__ = 'blog_posts'
-
-   slug = Column(String(255), primary_key=True)
-   title = Column(String(255), nullable=False)
-   content = Column(Text, nullable=False)
+    .--------------- minute (0 - 59)
+    |   .------------ hour (0 - 23)
+    |   |   .--------- day of month (1 - 31)
+    |   |   |   .------ month (1 - 12) or Jan, Feb ... Dec
+    |   |   |   |  .---- day of week (0 - 6) or Sun(0 or 7)
+    V   V   V   V  V
+    *   *   *   *  *
 ```
 
-### Add some data
+Example:
+1. 0 */5 ** 1-5 - runs update every five hours Monday - Friday
+2. 0,15,30,45 0,15-18 * * * - runs update every quarter hour during midnight hour and 3pm-6pm
 
-Next, create a `data/` directory somewhere on your disk (to keep things simple,
-it's recommended to have this directory in the application root). For each model
-you've defined, create a directory under this `data/` directory with the same
-name as the `__tablename__` attribute.
 
-We currently support three different ways to define data.
+Read up on cron (http://en.wikipedia.org/wiki/Cron) for more information on how to create these expressions
 
-#### 1. Multiple YAML files
+### Cleaning the Library:
 
-The first way is to have multiple YAML files inside the `data/<__tablename__>/`
-directory, each file corresponding to one record.
+Cleaning the Music/Video Libraries is not enabled by default. If you choose to do this you can select from a few options to try and reduce the likelyhood that a DB clean wile hose your database.
 
-In case of the "blog" example, we can define a new `BlogPost` record by creating
-the file `data/blog_posts/first-post-ever.yml` with the following content.
-
-```yaml
-slug: first-post-ever
-title: First post ever!
-content: |
-  This blog post talks about how it's the first post ever!
-```
-
-Adding more such files in the same directory would result in more records.
-
-#### 2. Single YAML file
-
-For "smaller" models which don't have more than 2-3 fields, Flask-FileAlchemy
-supports reading from an `_all.yml` file. In such a case, instead of adding one
-file for every row, simply add all the rows in the `_all.yml` file inside the
-table directory.
-
-For the "blog" example, this would look like the following.
-
-```yaml
-- slug: first-post-ever
-  title: First post ever!
-  content: This blog post talks about how it's the first post ever!
-
-- slug: second-post-ever
-  title: second post ever!
-  content: This blog post talks about how it's the second post ever!
- ```
-
-#### 3. Markdown/Frontmatter
-
-It's also possible to load data from Jekyll-style Markdown files containing
-Frontmatter metadata.
-
-In case of the blog example, it's possible to create a new `BlogPost` record by
-defining a `data/blog_posts/first-post-ever.md` file with the following
-content.
-
-```markdown
----
-slug: first-post-ever
-title: First post ever!
----
-
-This blog post talks about how it's the first post ever!
-```
-
-Please note that when defining data using markdown, the name of the column
-associated with the main markdown body **needs** to be `content`.
-
-#### 4. Configure and load
-
-Finally, configure `Flask-FileAlchemy` with your setup and ask it to load all
-your data.
-
-```python
-# configure Flask-FileAlchemy
-app.config['FILEALCHEMY_DATA_DIR'] = os.path.join(
-   os.path.dirname(os.path.realpath(__file__)), 'data'
-)
-app.config['FILEALCHEMY_MODELS'] = (BlogPost,)
-
-# load tables
-FileAlchemy(app, db).load_tables()
-```
-
-`Flask-FileAlchemy` then reads your data from the given directory, and stores
-them in the data store of your choice that you configured `Flask-FileAlchemy`
-with (the preference being `sqlite:///:memory:`).
-
-Please note that it's not possible to write to this database using `db.session`.
-Well, technically it's allowed, but the changes your app makes will only be
-reflected in the in-memory data store but won't be persisted to disk.
+* Library to Clean - You can clean your video library, music library, or both.
+* Prompt User Before Cleaning - you must confirm that you want to clean the library before it will happen. Really only useful for "After Update" as a condition. ![Settings Level Advanced](https://img.shields.io/badge/-advanced-blue)
+* Frequency - There are several frequency options.
+  * "After Update" will run a clean immediately following a scan on the selected library.
+  * The Day/Week/Month options will schedule a clean task to happen. Cleaning the Video Library is hardcoded for midnight and the music library at 2am. Weekly updates occur on Sunday and Monthly updates occur on the first of each month - these values are hardcoded.
+  * You can also choose to enter a custom cron timer for video and music library cleaning. These work the same as any of the other cron timers for the other schedules.
 
 ## Contributing
 
-Contributions are most welcome!
+If you're having issues with this addon there are two main places to look. The first is the addon thread on [the Kodi Forums](https://forum.kodi.tv/showthread.php?tid=119520). This is where you can ask general questions regarding functionality. If you're having a legitimate issue, such as an error message, you can [create an Issue](https://github.com/robweber/xbmclibraryautoupdate/issues) for it in this repository.
 
-Please make sure you have Python 3.9+ and [uv] installed.
-
-1. Git clone the repository -
-   `git clone https://github.com/siddhantgoel/flask-filealchemy`.
-
-2. Install the packages required for development - `uv sync`.
-
-3. That's basically it. You should now be able to run the test suite -
-   `uv run pytest`.
-
-[Flask-SQLAlchemy]: https://flask-sqlalchemy.palletsprojects.com/
-[Flask]: https://flask.palletsprojects.com/
-[Frozen-Flask]: https://pythonhosted.org/Frozen-Flask/
-[SQLAlchemy]: https://www.sqlalchemy.org/
-[uv]: https://docs.astral.sh/uv/
+Pull Requests are welcome if you want to dig around in the code to fix issues or add functionality. Please submit them using [the usual workflow](https://guides.github.com/introduction/flow/index.html). Additionally you can help keep languages files up to date by visiting [the Weblate page](https://kodi.weblate.cloud/projects/kodi-add-ons-services/service-xbmclibraryautoupdate/) for this addon and updating untranslated strings. Changes to Weblate will automatically create PRs to this repository. This is a great way to contribute if you're not a coder!
